@@ -1071,29 +1071,6 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # -----------------------------------------------------------------------------
-# QUICK-LOAD BENCHMARK PERSONAS (Top Bar)
-# -----------------------------------------------------------------------------
-st.markdown("""
-<div style="margin-top: 1rem; margin-bottom: 0.8rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-  <span style="font-size: 0.92rem; font-weight: 600; color: var(--brand);">⚡ Quick-load sample borrower profiles:</span>
-  <span style="font-size: 0.82rem; color: var(--fg-muted);">Click any profile to load its numbers and jump directly to results</span>
-</div>
-""", unsafe_allow_html=True)
-qp1, qp2, qp3 = st.columns(3)
-with qp1:
-    if st.button("👤 Load Priya (Salaried MNC · ₹8L)", key="btn_top_load_priya", use_container_width=True):
-        apply_persona("priya")
-        st.rerun()
-with qp2:
-    if st.button("🏪 Load Ravi (Kirana MSME · ₹15L)", key="btn_top_load_ravi", use_container_width=True):
-        apply_persona("ravi")
-        st.rerun()
-with qp3:
-    if st.button("🛵 Load Anita (Delivery Gig · ₹1.5L)", key="btn_top_load_anita", use_container_width=True):
-        apply_persona("anita")
-        st.rerun()
-
-# -----------------------------------------------------------------------------
 # FORM SECTION (THE 3 CORE STEPS + STEP 4 ACCURACY BOOSTER)
 # -----------------------------------------------------------------------------
 st.markdown('<div id="form-section"></div>', unsafe_allow_html=True)
