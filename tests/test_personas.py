@@ -155,19 +155,102 @@ class TestBorrowerCopilot(unittest.TestCase):
         self.assertIn("bounce", explanations["verdict_why"].lower())
         self.assertIn("consolidation", card["spoken_script"].lower())
 
+    def test_killswitch_1_bounce_alone_triggers_dont_borrow(self):
+        """Kill-switch 1: An auto-debit bounce (>=1) alone triggers DON'T BORROW even with high surplus."""
+        profile = {
+            "employment_type": "Salaried",
+            "net_income": 150000,
+            "target_loan_amount": 300000,
+            "tenure_months": 24,
+            "existing_emi": 5000,
+            "rent": 25000,
+            "living_expenses": 30000,
+            "cibil": "750+",
+            "age": 30,
+            "payment_bounces_6m": 1,
+            "active_app_loan_count": 0,
+            "app_loan_apr": 0.0
+        }
+        calc = run_full_underwriting(profile)
+        exp = generate_all_explanations(profile, calc)
+        card = build_negotiation_card(profile, calc)
+
+        self.assertEqual(calc["verdict"], "DON'T BORROW")
+        self.assertEqual(calc["lender_max_principal"], 0.0)
+        self.assertEqual(calc["borrower_safe_limit"], 0.0)
+        self.assertIn("bounce", exp["verdict_why"].lower())
+        self.assertIn("consolidation", card["spoken_script"].lower())
+
+    def test_killswitch_2_predatory_app_debt_alone_triggers_dont_borrow(self):
+        """Kill-switch 2: Active digital app loans with APR >= 24% alone triggers DON'T BORROW."""
+        profile = {
+            "employment_type": "Salaried",
+            "net_income": 120000,
+            "target_loan_amount": 200000,
+            "tenure_months": 24,
+            "existing_emi": 0,
+            "rent": 20000,
+            "living_expenses": 25000,
+            "cibil": "700–749",
+            "age": 28,
+            "payment_bounces_6m": 0,
+            "active_app_loan_count": 2,
+            "app_loan_apr": 32.0
+        }
+        calc = run_full_underwriting(profile)
+        exp = generate_all_explanations(profile, calc)
+        card = build_negotiation_card(profile, calc)
+
+        self.assertEqual(calc["verdict"], "DON'T BORROW")
+        self.assertEqual(calc["lender_max_principal"], 0.0)
+        self.assertEqual(calc["borrower_safe_limit"], 0.0)
+        self.assertIn("app", exp["verdict_why"].lower())
+        self.assertIn("consolidation", card["spoken_script"].lower())
+
+    def test_killswitch_3_zero_or_negative_cash_flow_alone_triggers_dont_borrow(self):
+        """Kill-switch 3: Zero or negative safe cash surplus (expenses consume 100% of income) alone triggers DON'T BORROW."""
+        profile = {
+            "employment_type": "Salaried",
+            "net_income": 50000,
+            "target_loan_amount": 100000,
+            "tenure_months": 12,
+            "existing_emi": 15000,
+            "rent": 20000,
+            "living_expenses": 20000,  # Total outgoings = 15k + 20k + 20k = 55k > 50k income
+            "cibil": "750+",
+            "age": 32,
+            "payment_bounces_6m": 0,
+            "active_app_loan_count": 0,
+            "app_loan_apr": 0.0
+        }
+        calc = run_full_underwriting(profile)
+        exp = generate_all_explanations(profile, calc)
+
+        self.assertLessEqual(calc["monthly_safe_ceiling"], 0.0)
+        self.assertEqual(calc["verdict"], "DON'T BORROW")
+        self.assertEqual(calc["lender_max_principal"], 0.0)
+        self.assertEqual(calc["borrower_safe_limit"], 0.0)
+        self.assertIn("expenses", exp["verdict_why"].lower())
+
     def test_rule_unknown_never_zero(self):
         """Rule 3: Unknown CIBIL score must not default to 0/300; it widens the band symmetrically."""
-        profile = {
+        profile_unknown = {
             "employment_type": "Salaried",
             "net_income": 100000,
             "target_loan_amount": 500000,
             "tenure_months": 36,
-            "cibil": "Unknown / Unscored"
+            "existing_emi": 0,
+            "rent": 20000,
+            "living_expenses": 20000,
+            "cibil": "I don't know"
         }
-        calc = run_full_underwriting(profile)
-        self.assertTrue(calc["is_cibil_unknown"])
-        # Should be a wide band, not a subprime penalty
-        self.assertGreaterEqual(calc["rate_max"] - calc["rate_min"], 1.5)
+        calc_unknown = run_full_underwriting(profile_unknown)
+        self.assertTrue(calc_unknown["is_cibil_unknown"])
+        # Should NOT be a subprime default penalty (>18% interest rate)
+        self.assertLess(calc_unknown["rate_min"], 14.0)
+        # Should be a widened band (spread >= 1.5%)
+        spread = calc_unknown["rate_max"] - calc_unknown["rate_min"]
+        self.assertGreaterEqual(spread, 1.5)
 
     def test_rule_confidence_progression(self):
         """Rule 2: Confidence starts at 60.0% for mandatory and increases up to 95.0%."""
@@ -202,3 +285,4 @@ class TestBorrowerCopilot(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+

@@ -378,7 +378,13 @@ def run_full_underwriting(profile: Dict[str, Any]) -> Dict[str, Any]:
     # 2. Risk Adjustments on Rates
     spread_adj = 0.0
     cibil_str = str(cibil).strip()
-    is_cibil_unknown = "unknown" in cibil_str.lower() or "unscored" in cibil_str.lower()
+    is_cibil_unknown = (
+        "unknown" in cibil_str.lower()
+        or "unscored" in cibil_str.lower()
+        or "don't know" in cibil_str.lower()
+        or "dont know" in cibil_str.lower()
+        or cibil_str == ""
+    )
 
     if is_cibil_unknown:
         rate_min = max(8.5, base_rate_min - 0.75)
