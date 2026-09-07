@@ -6,13 +6,15 @@
 A zero-database, zero-API, deterministic borrowing copilot that empowers Indian borrowers before they walk into a lender. It answers the four core borrowing questions:
 1. **Should I borrow at all?** ($O_1$: Recommendation Verdict)
 2. **How much am I really eligible for?** ($O_2$: Lender Max Sanction vs. Borrower Safe Limit, with explicit guidance on which to use)
-3. **What is a fair rate for me?** ($O_3$: Fair Interest Rate Band & All-In APR with 18% GST)
+3. **What is a fair rate for me?** ($O_3$: Fair Interest Rate Band & All-In APR with statutory 18% GST)
 4. **What EMI should I agree to?** ($O_4$: Monthly Safe Ceiling, Tenure Trade-Offs, and Dual Macroeconomic Stress Shock)
 5. **The Mobile Negotiation Card:** An in-branch cheat sheet with target anchors, borrower leverage points, bank traps to reject, and a verbatim spoken counter-script.
 
 ---
 
 ## ⚡ Quickstart (Run Locally in Under 2 Minutes)
+
+> **Note on "No backend required":** The challenge brief specifies *no backend required*, which means the application has zero external database or third-party credit bureau API dependencies — Streamlit serves the reactive frontend and deterministic Python engine directly on a local server, guaranteeing it runs locally from this README in under 5 minutes without setup friction.
 
 ### Prerequisites
 * Python 3.10+ installed on your system.
@@ -30,9 +32,9 @@ The interactive application will automatically open in your browser at `http://l
 
 ### 3. Run Automated Unit Tests
 ```bash
-python -m unittest tests/test_personas.py
+python -m unittest discover tests
 ```
-All 7 unit tests validate Priya, Ravi, Anita, confidence progression, and non-zero unknown credit score modeling.
+Runs the full test suite (15 unit tests) validating Priya, Ravi, Anita, the 3 independent kill-switches, confidence scaling, and unrated non-zero credit score modeling.
 
 ---
 
@@ -53,10 +55,10 @@ This repository includes a native [`render.yaml`](render.yaml) blueprint for con
 
 | Deliverable | File Path | Description |
 | :--- | :--- | :--- |
-| **Deliverable 1: Working App** | [`app.py`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/app.py) | Interactive web interface styled with the Lokta design system (Imperial Plum `#4B2440`, warm canvas, pill buttons, info tooltips, live confidence gauge, paired two-fold cards, and mobile negotiation card). |
-| **Deliverable 2: Rulebook** | [`RULES.md`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/RULES.md) | Comprehensive table cataloguing every rule, threshold, product band, stress shock, and regulatory source. |
-| **Deliverable 3: 3 Run-Throughs** | [`tests/test_personas.py`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/tests/test_personas.py) & [`WALKTHROUGH.md`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/WALKTHROUGH.md) | End-to-end question paths, calculations, outputs, and Negotiation Cards for Priya, Ravi, and Anita. |
-| **Deliverable 4: 5-Min Walkthrough** | [`WALKTHROUGH.md`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/WALKTHROUGH.md) | Written walkthrough of architecture, how the 5 challenge rules were satisfied, what to build next, and what was cut. |
+| **Deliverable 1: Working App** | [`app.py`](app.py) | Interactive web interface styled with the Lokta design system (Imperial Plum `#4B2440`, warm canvas, pill buttons, info tooltips, live confidence gauge, paired two-fold cards, and mobile negotiation card). |
+| **Deliverable 2: Rulebook** | [`RULES.md`](RULES.md) | Comprehensive table cataloguing every rule, threshold, product band, stress shock, and regulatory source (*what · value · why · source or "my judgement"*). |
+| **Deliverable 3: 3 Run-Throughs** | [`WALKTHROUGH.md`](WALKTHROUGH.md) & [`tests/test_personas.py`](tests/test_personas.py) | Complete question-by-question traces, active/skipped variables, O1–O4 outputs, verbatim Negotiation Cards, and embedded screenshots for Priya, Ravi, and Anita. |
+| **Deliverable 4: 5-Min Walkthrough** | [`WALKTHROUGH.md`](WALKTHROUGH.md) | Written walkthrough of architecture, how the 5 challenge rules were satisfied, what to build next, and what was cut. |
 | **Master Technical Spec** | [`docs/ARCHITECTURE_AND_SPECIFICATION.md`](docs/ARCHITECTURE_AND_SPECIFICATION.md) | Complete system architecture, mathematical formulas, and underwriting logic. |
 | **Code File Map** | [`docs/PROJECT_STRUCTURE_AND_FILES.md`](docs/PROJECT_STRUCTURE_AND_FILES.md) | Granular component breakdown, input/output contracts, and cross-file execution flows. |
 | **Reference Challenge Brief** | [`docs/Lokta_Borrower_Copilot_Build_Challenge_v2.html`](docs/Lokta_Borrower_Copilot_Build_Challenge_v2.html) | Original Lokta Build Challenge specification and evaluation rubric. |
@@ -65,26 +67,26 @@ This repository includes a native [`render.yaml`](render.yaml) blueprint for con
 
 ## 🎯 The Three Verified Personas (One-Click Quick Load)
 
-Click any persona button at the top of the app to populate inputs instantly:
+Click any borrower profile in the test expander (*"🧪 Try a sample borrower profile"*) at the bottom of the app to populate inputs instantly:
 
 ### 1. Priya (29, Bengaluru · Salaried MNC Professional)
 * **Profile:** Net ₹1,10,000/mo, Car loan ₹14,000/mo, Rent ₹28,000, Living ₹25,000, 780 CIBIL, 5 yrs at Tier-1 MNC.
 * **Loan Wanted:** ₹8,00,000 for wedding over 48 months.
 * **Outputs:**
-  * **$O_1$ (Verdict):** `BORROW` (Requested ₹20,690 EMI fits comfortably within ₹37,500 safe ceiling).
-  * **$O_2$ (Limits):** Lender Sanction: **₹18.1L** vs. Safe Limit: **₹14.6L** $\rightarrow$ **Use Your Safe Limit (₹14.6L)**.
-  * **$O_3$ (Rate & APR):** Fair Rate: **10.50% – 11.25%** | True All-In APR: **11.65%** (With 1.0% fee + 18% GST).
-  * **$O_4$ (Monthly Ceiling):** **₹37,500/month** (Survives 20% income shock: stress ratio is 39.4% $\le$ 65%).
+  * **$O_1$ (Verdict):** `BORROW` (Requested ₹20,630 EMI fits comfortably within ₹39,700 safe ceiling).
+  * **$O_2$ (Limits):** Lender Sanction: **₹18.0L** vs. Safe Limit: **₹15.4L** $\rightarrow$ **Use Your Safe Limit (₹15.4L)**.
+  * **$O_3$ (Rate & APR):** Fair Rate: **10.50% – 11.25%** | True All-In APR: **11.51%** (With 1.0% fee + 18% GST).
+  * **$O_4$ (Monthly Ceiling):** **₹39,700/month** (Survives 20% income shock: stress ratio is 40.2% $\le$ 65%).
 
 ### 2. Ravi (42, Mysuru · Self-Employed Kirana Store Owner)
 * **Profile:** Cash income ₹85,000/mo, ITR ₹4,20,000/yr, Unscored CIBIL, Living ₹28,000, Owns shop worth ₹45,00,000 unencumbered. Wife earns ₹18,000 teaching.
 * **Loan Wanted:** ₹15,00,000 for stock line and delivery vehicle over 84 months.
 * **Outputs:**
   * **The Product Pivot:** Pledging the unencumbered shop pivots Ravi from high-risk 18%+ unsecured credit into **Loan Against Property (LAP)**.
-  * **$O_1$ (Verdict):** `BORROW` (Requested ₹24,900 EMI fits well within low-season cash flows).
-  * **$O_2$ (Limits):** Lender LAP Sanction: **₹22.5L** vs. Safe Limit: **₹21.0L** $\rightarrow$ **Use Your Safe Limit (₹21.0L)**.
-  * **$O_3$ (Rate & APR):** Fair Rate: **9.75% – 10.50%** | True All-In APR: **10.85%**.
-  * **$O_4$ (Monthly Ceiling):** **₹42,500/month** (Anchored to business low season).
+  * **$O_1$ (Verdict):** `BORROW` (Requested ₹24,608 EMI fits well within low-season cash flows).
+  * **$O_2$ (Limits):** Lender LAP Sanction: **₹22.5L** vs. Safe Limit: **₹30.4L** $\rightarrow$ **Use Your Safe Limit (₹30.4L)**.
+  * **$O_3$ (Rate & APR):** Fair Rate: **9.25% – 10.00%** | True All-In APR: **10.00%**.
+  * **$O_4$ (Monthly Ceiling):** **₹36,912/month** (Anchored to business low season).
 
 ### 3. Anita (35, Hubballi · Informal Delivery Fleet Partner)
 * **Profile:** Delivery rider plus tailoring. Net ₹28,000/mo, 2 kids, husband unemployed 8 months. 3 active digital app loans totaling ₹35,000 at 36% APR. 1 auto-debit bounce last month.
@@ -93,8 +95,8 @@ Click any persona button at the top of the app to populate inputs instantly:
   * **Kill-Switch Active:** Auto-debit bounce $\ge 1$ and predatory app debt $>24\%$ APR immediately trigger `DON'T BORROW`.
   * **$O_1$ (Verdict):** `DON'T BORROW` (*"Why: An auto-debit bounce in the last 6 months and active high-cost app debt (36% APR) flag acute distress; adding new debt before clearing arrears creates severe insolvency risk."*).
   * **$O_2$ (Limits):** Lender Sanction: **₹0** | Safe Limit: **₹0** (Blocked until app loans are restructured).
-  * **$O_3$ (Rate & APR):** Fair Commercial EV Rate: **11.50% – 13.00%** vs. Current App Rate: **36.00% APR**.
-  * **$O_4$ (Monthly Ceiling):** **₹3,500/month** (Requires app debt clearance before onboarding).
+  * **$O_3$ (Rate & APR):** Fair Commercial EV Rate: **11.00% – 12.50%** vs. Current App Rate: **36.00% APR**.
+  * **$O_4$ (Monthly Ceiling):** **₹200/month** (Requires app debt clearance before onboarding).
 
 ---
 
@@ -106,8 +108,9 @@ lending-copilot/
 ├── app.py                              # Presentation Layer (Streamlit, Lokta UI Design System)
 ├── requirements.txt                    # Python dependencies
 ├── RULES.md                            # Complete Underwriting Rulebook & Assumptions Registry
-├── WALKTHROUGH.md                      # 5-Minute Technical & Design Walkthrough
+├── WALKTHROUGH.md                      # 5-Minute Technical & Design Walkthrough (Deliverable 3 & 4)
 ├── README.md                           # Quickstart and Documentation
+├── render.yaml                         # Cloud Deployment Blueprint (Render.com)
 │
 ├── engine/                             # Core Deterministic Python Engine (Zero DB / Zero API)
 │   ├── __init__.py                     # Clean package exports
@@ -116,9 +119,28 @@ lending-copilot/
 │   ├── explanations.py                 # Deterministic bottleneck priority trees & Rule 4 "Why" generators
 │   └── negotiation.py                  # Tactical Negotiation Card & verbatim spoken counter-script
 │
-└── tests/
-    ├── __init__.py
-    └── test_personas.py                # Automated Persona Unit Tests (Priya, Ravi, Anita)
+├── tests/
+│   ├── __init__.py
+│   ├── test_personas.py                # Automated Persona Unit Tests (Priya, Ravi, Anita, 3 Kill-Switches)
+│   └── test_all_18_variables.py        # Independent Verification of all 18 adaptive risk variables
+│
+├── docs/                               # Architectural & Reference Documentation
+│   ├── ARCHITECTURE_AND_SPECIFICATION.md  # Master technical spec & mathematical blueprint
+│   ├── PROJECT_STRUCTURE_AND_FILES.md     # Component breakdown & execution flows
+│   ├── questions.xlsx                     # Master 64-question bank
+│   └── Lokta_Borrower_Copilot_Build_Challenge_v2.html # Original challenge brief
+│
+└── assets/                             # UI Visual Assets & Evaluation Media
+    ├── advisor-consultation.png        # Responsive consultation visual
+    ├── advisor-tablet.png              # In-branch negotiation visual
+    ├── categories_and_subcategories.png# Category mapping schematic
+    └── screenshots/                    # Deliverable 3 Evaluation Screenshots
+        ├── priya_outputs.png           # Priya Four-Output Screen (O1-O4)
+        ├── priya_negotiation_card.png  # Priya Negotiation Card Screen
+        ├── ravi_outputs.png            # Ravi Four-Output Screen (O1-O4)
+        ├── ravi_negotiation_card.png   # Ravi Negotiation Card Screen
+        ├── anita_outputs.png           # Anita Four-Output Screen (O1-O4)
+        └── anita_negotiation_card.png  # Anita Negotiation Card Screen
 ```
 
 ---
