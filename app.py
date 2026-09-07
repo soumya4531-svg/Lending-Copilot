@@ -538,7 +538,6 @@ if new_detected_category:
 col_header_left, col_header_right = st.columns([3, 1])
 
 with col_header_left:
-    st.markdown('<span class="lokta-pill">Lokta · Build Challenge · Take-Home</span>', unsafe_allow_html=True)
     st.markdown("<h1 style='margin-top:0.4rem; margin-bottom:0.2rem;'>Borrower <em>Copilot</em></h1>", unsafe_allow_html=True)
     st.markdown(
         "<p style='color:#6E6069; font-size:1.02rem; max-width:44rem; margin-bottom:1.1rem;'>"
