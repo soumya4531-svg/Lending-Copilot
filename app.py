@@ -1596,6 +1596,28 @@ else:
         </div>
         """, unsafe_allow_html=True)
 
+    # 5. HONESTY ABOUT LIMITS (DISCLOSING WHERE THE APP GUESSES)
+    cibil_input = user_p.get("cibil", "I don't know")
+    is_unknown_cibil = ("don't know" in str(cibil_input).lower() or str(cibil_input).strip() == "")
+    cibil_guess_txt = (
+        "You marked your credit score as unknown. We estimated an unrated retail band (±2.0% spread) rather than penalizing you as a defaulter."
+        if is_unknown_cibil else
+        f"Credit score ({cibil_input}) is self-reported and unverified by a bureau API pull."
+    )
+
+    st.markdown(f"""
+    <div class="callout" style="margin-top: 1.5rem; background: var(--bg-soft); border-left: 3px solid var(--fg-muted);">
+      <b>🔍 Honesty about limits — Where this tool is guessing vs. calculating:</b>
+      <ul style="margin: 0.5rem 0 0 1.2rem; padding: 0; font-size: 0.88rem; color: var(--fg-muted); line-height: 1.55;">
+        <li><b>Exact Math:</b> Loan EMI, total interest, and all-in APR (with 18% GST fee drag) are calculated with exact rupee formulas.</li>
+        <li><b>Living expenses guess:</b> Assumed constant based on your self-reported entries; unforeseen medical costs or future inflation over {tenure_val} months are not predicted.</li>
+        <li><b>Credit profile estimation:</b> {cibil_guess_txt}</li>
+        <li><b>Bank fee assumption:</b> We assume a standard 1.0%–1.5% bank processing fee plus 18% GST. Verify your lender's sanction letter for exact charges.</li>
+        <li><b>Confidence ceiling:</b> Capped at 95% because self-reported entries have not undergone bank statement audit or physical title deed search.</li>
+      </ul>
+    </div>
+    """, unsafe_allow_html=True)
+
     # Action Buttons
     c_btn1, c_btn2 = st.columns([1, 1])
     with c_btn1:
