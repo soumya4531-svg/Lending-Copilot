@@ -36,6 +36,19 @@ All 7 unit tests validate Priya, Ravi, Anita, confidence progression, and non-ze
 
 ---
 
+## 🚀 Cloud Deployment (Render with Auto-Deploy)
+
+This repository includes a native [`render.yaml`](render.yaml) blueprint for continuous deployment on [Render](https://render.com). Every commit pushed to GitHub automatically triggers a zero-downtime rebuild and redeploy.
+
+### Deployment Settings
+* **Service Type:** Web Service
+* **Runtime:** Python 3.10+
+* **Build Command:** `pip install -r requirements.txt`
+* **Start Command:** `streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.enableCORS false --server.enableXsrfProtection false`
+* **Auto-Deploy:** Enabled (triggers on push to `main`)
+
+---
+
 ## 📁 Repository Deliverables Mapping
 
 | Deliverable | File Path | Description |
