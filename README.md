@@ -57,8 +57,9 @@ This repository includes a native [`render.yaml`](render.yaml) blueprint for con
 | **Deliverable 2: Rulebook** | [`RULES.md`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/RULES.md) | Comprehensive table cataloguing every rule, threshold, product band, stress shock, and regulatory source. |
 | **Deliverable 3: 3 Run-Throughs** | [`tests/test_personas.py`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/tests/test_personas.py) & [`WALKTHROUGH.md`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/WALKTHROUGH.md) | End-to-end question paths, calculations, outputs, and Negotiation Cards for Priya, Ravi, and Anita. |
 | **Deliverable 4: 5-Min Walkthrough** | [`WALKTHROUGH.md`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/WALKTHROUGH.md) | Written walkthrough of architecture, how the 5 challenge rules were satisfied, what to build next, and what was cut. |
-| **Master Technical Spec** | [`ARCHITECTURE_AND_SPECIFICATION.md`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/ARCHITECTURE_AND_SPECIFICATION.md) | Complete system architecture, mathematical formulas, and underwriting logic. |
-| **Code File Map** | [`PROJECT_STRUCTURE_AND_FILES.md`](file:///c:/Users/soumy/OneDrive/Desktop/lending%20copilot/PROJECT_STRUCTURE_AND_FILES.md) | Granular component breakdown, input/output contracts, and cross-file execution flows. |
+| **Master Technical Spec** | [`docs/ARCHITECTURE_AND_SPECIFICATION.md`](docs/ARCHITECTURE_AND_SPECIFICATION.md) | Complete system architecture, mathematical formulas, and underwriting logic. |
+| **Code File Map** | [`docs/PROJECT_STRUCTURE_AND_FILES.md`](docs/PROJECT_STRUCTURE_AND_FILES.md) | Granular component breakdown, input/output contracts, and cross-file execution flows. |
+| **Reference Challenge Brief** | [`docs/Lokta_Borrower_Copilot_Build_Challenge_v2.html`](docs/Lokta_Borrower_Copilot_Build_Challenge_v2.html) | Original Lokta Build Challenge specification and evaluation rubric. |
 
 ---
 
