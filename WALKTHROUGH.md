@@ -92,7 +92,7 @@ Below are the end-to-end question traces, four outputs, and complete Negotiation
 
 #### b) Outputs (O1–O4)
 
-![Priya Four Outputs](/assets/screenshots/priya_outputs.png)
+![Priya Four Outputs](assets/screenshots/priya_outputs.png)
 
 - **$O_1$ (Verdict):** **BORROW**  
   *Why:* "Your requested monthly payment of ₹20,630 is within your affordable monthly limit of ₹39,700. You should still have room for your regular expenses and emergencies."
@@ -111,7 +111,7 @@ Below are the end-to-end question traces, four outputs, and complete Negotiation
 
 #### c) Negotiation Card (Full Verbatim Output)
 
-![Priya Negotiation Card](/assets/screenshots/priya_negotiation_card.png)
+![Priya Negotiation Card](assets/screenshots/priya_negotiation_card.png)
 
 ```
 ================================================================================
@@ -188,7 +188,7 @@ or mandatory single-premium insurance add-ons that breach these limits."
 
 #### b) Outputs (O1–O4)
 
-![Ravi Four Outputs](/assets/screenshots/ravi_outputs.png)
+![Ravi Four Outputs](assets/screenshots/ravi_outputs.png)
 
 - **$O_1$ (Verdict):** **BORROW**  
   *Why:* "Using your debt-free property unlocks a much lower interest rate, and your monthly payment of ₹24,608 fits comfortably within your safe monthly budget."
@@ -208,7 +208,7 @@ or mandatory single-premium insurance add-ons that breach these limits."
 
 #### c) Negotiation Card (Full Verbatim Output)
 
-![Ravi Negotiation Card](/assets/screenshots/ravi_negotiation_card.png)
+![Ravi Negotiation Card](assets/screenshots/ravi_negotiation_card.png)
 
 ```
 ================================================================================
@@ -286,7 +286,7 @@ above 1.0% + GST, or mandatory single-premium insurance add-ons that breach thes
 
 #### b) Outputs (O1–O4)
 
-![Anita Four Outputs](/assets/screenshots/anita_outputs.png)
+![Anita Four Outputs](assets/screenshots/anita_outputs.png)
 
 - **$O_1$ (Verdict):** **DON'T BORROW**  
   *Why:* "An auto-debit payment bounce in the last 6 months and active high-cost app loans (36% APR) flag serious financial stress. Taking on new debt before clearing these could make managing your finances very difficult."
@@ -304,7 +304,7 @@ above 1.0% + GST, or mandatory single-premium insurance add-ons that breach thes
 
 #### c) Negotiation Card (Full Verbatim Output)
 
-![Anita Negotiation Card](/assets/screenshots/anita_negotiation_card.png)
+![Anita Negotiation Card](assets/screenshots/anita_negotiation_card.png)
 
 ```
 ================================================================================
