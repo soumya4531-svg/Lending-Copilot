@@ -18,6 +18,7 @@ from .confidence import (
     compute_confidence_score,
     get_spread_half_width,
     get_questions_for_category,
+    get_variable_questions_for_category,
     MASTER_QUESTIONS,
 )
 
@@ -45,6 +46,7 @@ __all__ = [
     "compute_confidence_score",
     "get_spread_half_width",
     "get_questions_for_category",
+    "get_variable_questions_for_category",
     "MASTER_QUESTIONS",
     "generate_all_explanations",
     "explain_verdict",

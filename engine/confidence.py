@@ -14,120 +14,124 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "M01",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Primary Loan Purpose",
+        "label": "What do you need the loan for?",
         "input_type": "select",
-        "options": ["Wedding", "Business Expansion", "Vehicle Purchase", "Home Renovation", "Debt Consolidation", "Medical Emergency"],
-        "default": "Wedding",
+        "options": ["Personal needs", "Wedding", "Business", "Vehicle", "Home", "Education", "Medical expenses", "Debt Consolidation", "Other"],
+        "default": "Personal needs",
         "weight": 6.0,
         "impact": "O1, O3",
-        "why_we_ask": "Sets baseline loan product classification, default risk tier, and maximum allowable tenure bounds."
+        "why_we_ask": "Helps determine the right loan type and what repayment period lenders allow."
     },
     "target_loan_amount": {
         "id": "M02",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Target Loan Amount (₹)",
+        "label": "How much do you want to borrow?",
+        "hint": "The loan amount you need.",
         "input_type": "number",
         "default": 800000,
         "min": 10000,
         "step": 10000,
         "weight": 6.0,
         "impact": "O1, O2",
-        "why_we_ask": "Sets the requested principal to test against safe borrowing headroom and evaluate affordability."
+        "why_we_ask": "The loan amount you need, so we can test whether the payments fit your monthly budget."
     },
     "tenure_months": {
         "id": "M03",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Preferred Repayment Tenure (Months)",
+        "label": "How many months will you take to repay?",
         "input_type": "select",
-        "options": [12, 24, 36, 48, 60, 84, 120],
+        "options": [12, 24, 36, 48, 60, 72, 84, 120],
         "default": 48,
         "weight": 6.0,
         "impact": "O4",
-        "why_we_ask": "Defines the monthly amortization schedule and determines total interest drag over the life of the loan."
+        "why_we_ask": "Sets how many months you will spread repayments over and how much total interest you will pay."
     },
     "employment_type": {
         "id": "M04",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Primary Employment Structure",
+        "label": "What is your main source of income?",
         "input_type": "select",
-        "options": ["Salaried", "Self-Employed / MSME", "Informal / Gig Economy"],
-        "default": "Salaried",
+        "options": ["Salaried job", "Self-employed", "Business", "Freelance / Contract work", "Other"],
+        "default": "Salaried job",
         "weight": 6.0,
         "impact": "Branching, O2",
-        "why_we_ask": "Determines the regulatory bank FOIR benchmark (40% to 55%) and activates category-specific underwriting rules."
+        "why_we_ask": "Lenders price salaried jobs, businesses, and freelance income differently."
     },
     "net_income": {
         "id": "M05",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Net Monthly In-Hand Income (₹)",
+        "label": "What is your monthly take-home income?",
+        "hint": "The amount you receive after deductions.",
         "input_type": "number",
         "default": 110000,
         "min": 5000,
         "step": 5000,
         "weight": 6.0,
         "impact": "O2, O4",
-        "why_we_ask": "The baseline denominator for all debt-to-income limits and personal disposable cash flow math."
+        "why_we_ask": "The baseline for how much debt you can comfortably afford to pay each month."
     },
     "existing_emi": {
         "id": "M06",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Total Existing Monthly Loan EMIs (₹)",
+        "label": "Other loan payments each month",
+        "hint": "Include all your current loan EMIs.",
         "input_type": "number",
         "default": 14000,
         "min": 0,
         "step": 1000,
         "weight": 6.0,
         "impact": "O2, O4",
-        "why_we_ask": "Directly deducted from your income to quantify how much debt headroom remains before hitting risk limits."
+        "why_we_ask": "We subtract your existing loan payments so a new loan doesn't overstretch your budget."
     },
     "rent": {
         "id": "M07",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Monthly Rent / Housing Outflow (₹)",
+        "label": "Rent or housing payment each month",
         "input_type": "number",
         "default": 28000,
         "min": 0,
         "step": 1000,
         "weight": 6.0,
         "impact": "O2, O4",
-        "why_we_ask": "Fixed non-negotiable shelter costs deducted directly in real cash flow math (which bank gross formulas ignore)."
+        "why_we_ask": "Your regular shelter cost. Bank formulas often ignore this, but it affects your real affordability."
     },
     "living_expenses": {
         "id": "M08",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Essential Monthly Living Costs (₹)",
+        "label": "Essential expenses each month",
+        "hint": "Food, bills, travel and other necessary costs.",
         "input_type": "number",
         "default": 25000,
         "min": 1000,
         "step": 1000,
         "weight": 6.0,
         "impact": "O2, O4",
-        "why_we_ask": "The non-negotiable floor for groceries, healthcare, and utilities needed to protect you from insolvency."
+        "why_we_ask": "Money needed for food, groceries, travel and household bills so you never face a cash shortage."
     },
     "cibil": {
         "id": "M09",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Credit Score (CIBIL)",
+        "label": "What is your CIBIL score?",
         "input_type": "select",
-        "options": ["750+", "700–749", "Below 700", "Unknown / Unscored"],
-        "default": "750+",
+        "options": ["800+", "750–799", "700–749", "600–699", "Below 600", "I don't know"],
+        "default": "750–799",
         "weight": 6.0,
         "impact": "O3",
-        "why_we_ask": "750+ qualifies for prime corporate rate discounts; unknown widens the interest spread without treating you as a defaulter."
+        "why_we_ask": "A higher score qualifies for lower rates. If you don't know, we show a fair, honest estimated range."
     },
     "age": {
         "id": "M10",
         "tier": "Mandatory",
         "category": "Universal",
-        "label": "Borrower Age (Years)",
+        "label": "How old are you?",
         "input_type": "number",
         "default": 29,
         "min": 18,
@@ -135,7 +139,7 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "step": 1,
         "weight": 6.0,
         "impact": "O2, O4",
-        "why_we_ask": "Caps loan tenure against the standard 60-year retirement boundary to ensure debts do not carry into retirement."
+        "why_we_ask": "Helps ensure your repayment schedule finishes comfortably before retirement age."
     },
 
     # =========================================================================
@@ -145,34 +149,34 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "S01",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Employer Corporate Classification",
+        "label": "What type of company do you work for?",
         "input_type": "select",
-        "options": ["Listed Tier-1 Corporate/MNC", "Mid-Market Private Firm", "Early-Stage Startup", "Government / PSU"],
+        "options": ["Listed Tier-1 Corporate/MNC", "Government / PSU", "Mid-Market Private Firm", "Early-Stage Startup"],
         "default": "Listed Tier-1 Corporate/MNC",
         "weight": 3.0,
         "impact": "O2, O3",
-        "why_we_ask": "Tier-1/PSU unlocks the lowest prime corporate spreads and raises allowable FOIR up to 55%."
+        "why_we_ask": "Tier-1 / PSU unlocks lower interest rates and raises allowable FOIR up to 55%."
     },
     "job_vintage_years": {
         "id": "S02",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Continuous Years with Current Employer",
+        "label": "How many years have you been at your current job?",
         "input_type": "number",
-        "default": 5.0,
+        "default": 3.0,
         "min": 0.0,
         "step": 0.5,
         "weight": 2.5,
         "impact": "O3",
-        "why_we_ask": "Over 3 years at the same firm proves job stability, narrowing rate spreads; <1 year adds a job-hopping risk penalty."
+        "why_we_ask": "Over 3 years at the same job proves stability, lowering interest rate spreads."
     },
     "career_vintage_years": {
         "id": "S03",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Total Career Experience (Years)",
+        "label": "Total years of overall work experience",
         "input_type": "number",
-        "default": 6.0,
+        "default": 5.0,
         "min": 0.0,
         "step": 1.0,
         "weight": 2.0,
@@ -183,19 +187,19 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "S04",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Salary Deposit Method",
+        "label": "How is your salary paid into your account?",
         "input_type": "select",
         "options": ["Direct Bank Transfer (NEFT/RTGS)", "Cash / Cheque"],
         "default": "Direct Bank Transfer (NEFT/RTGS)",
         "weight": 2.0,
         "impact": "O2",
-        "why_we_ask": "Digital bank credits validate 100% of income; cash salaries suffer a 25% underwriting haircut."
+        "why_we_ask": "Bank transfers validate 100% of income; cash salary takes a 25% underwriting haircut."
     },
     "variable_bonus_share_pct": {
         "id": "S05",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Variable Pay / Bonus Share of Total CTC (%)",
+        "label": "Roughly what % of your total pay is variable or bonus?",
         "input_type": "number",
         "default": 0,
         "min": 0,
@@ -203,78 +207,78 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "step": 5,
         "weight": 2.0,
         "impact": "O2, O4",
-        "why_we_ask": "If bonuses exceed 20% of pay, monthly safe capacity is discounted by 15% to protect against bonus volatility."
+        "why_we_ask": "If bonuses exceed 20% of CTC, monthly safe capacity is discounted by 15% to buffer volatility."
     },
     "on_notice_or_probation": {
         "id": "S06",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Currently on Probation or Serving Notice Period?",
+        "label": "Are you currently on probation or serving notice?",
         "input_type": "select",
         "options": ["No", "Yes"],
         "default": "No",
         "weight": 2.0,
         "impact": "O1, O3",
-        "why_we_ask": "Notice period flags impending income discontinuity, adding a 1.5% spread and capping borrowing to 6 months' pay."
+        "why_we_ask": "Serving notice flags risk of income gap, adding 1.50% rate spread and capping principal to 6 months' salary."
     },
     "liquid_savings_months": {
         "id": "S07",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Liquid Savings Runway (Months of Expenses)",
+        "label": "How many months of expenses do you have in savings?",
         "input_type": "number",
-        "default": 8.0,
+        "default": 3.0,
         "min": 0.0,
         "step": 1.0,
         "weight": 2.5,
         "impact": "O4",
-        "why_we_ask": "Holding 6+ months of living costs drops required emergency buffer from 10% to 5%, expanding safe borrowing headroom."
+        "why_we_ask": "Having 6+ months of living costs reduces emergency reserve from 10% to 5%, expanding safe borrowing limit."
     },
     "cc_utilization_pct": {
         "id": "S08",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Revolving Credit Card Limit Utilization (%)",
+        "label": "Roughly what % of your credit card limit do you use?",
         "input_type": "number",
-        "default": 15,
+        "default": 20,
         "min": 0,
         "max": 100,
         "step": 5,
         "weight": 2.0,
         "impact": "O3",
-        "why_we_ask": "Utilizing >50% of card limits signals cash stretch and adds 0.50% risk spread; <20% earns prime discounts."
+        "why_we_ask": "Using over 50% of card limits signals cash stretch (+0.50% spread); under 20% lowers rates."
     },
     "credit_inquiries_90d": {
         "id": "S09",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Credit Inquiries in Last 90 Days",
+        "label": "Loan or card applications made in the last 90 days",
         "input_type": "number",
         "default": 0,
         "min": 0,
         "step": 1,
         "weight": 1.5,
         "impact": "O3",
-        "why_we_ask": "Over 3 recent inquiries signals credit hunger, widening the upper interest rate band by +1.0%."
+        "why_we_ask": "Over 3 recent inquiries signals credit hunger, widening your interest rate band."
     },
     "quoted_bank_rate": {
         "id": "S10",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Bank's Quoted Pre-Approved Rate (%, Optional)",
+        "label": "Did a bank already quote you an interest rate? (%, Optional)",
         "input_type": "number",
         "default": 0.0,
         "min": 0.0,
         "step": 0.25,
         "weight": 3.0,
         "impact": "Negotiation Card",
-        "why_we_ask": "Benchmarks the bank's actual quote against fair regulatory pricing on the Negotiation Card."
+        "why_we_ask": "Benchmarks the bank's quote against fair regulatory pricing on the Negotiation Card."
     },
     "quoted_processing_fee_pct": {
         "id": "S11",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Quoted Processing Fee (%)",
+        "label": "What processing fee did the bank quote? (%)",
         "input_type": "number",
         "default": 1.0,
         "min": 0.0,
@@ -287,32 +291,32 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "S12",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Remaining Months on Existing Car/Personal Debt",
+        "label": "Months left to pay on your biggest existing loan",
         "input_type": "number",
-        "default": 24,
+        "default": 12,
         "min": 0,
         "step": 1,
         "weight": 1.5,
         "impact": "O2, O4",
-        "why_we_ask": "If existing loans finish within 12 months, future cash headroom expands, giving you greater long-term safety."
+        "why_we_ask": "If existing loans finish within 12 months, future monthly headroom expands, giving you greater safety."
     },
     "has_large_upcoming_outlay": {
         "id": "S13",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Major Planned Expenses in Next 12 Months?",
+        "label": "Any major big expenses planned in the next 12 months?",
         "input_type": "select",
         "options": ["No", "Yes"],
         "default": "No",
         "weight": 1.5,
         "impact": "O4",
-        "why_we_ask": "Planned capital outlays are deducted from emergency reserves, lowering your safe borrowing ceiling."
+        "why_we_ask": "Planned one-off capital needs require higher cash reserves, lowering safe borrowing limit."
     },
     "co_applicant_income": {
         "id": "S14",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Co-Applicant / Spouse Net Income (₹/month)",
+        "label": "Spouse or co-applicant monthly take-home income (₹)",
         "input_type": "number",
         "default": 0,
         "min": 0,
@@ -325,7 +329,7 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "S15",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Active Home Loan with Tax Deductions?",
+        "label": "Do you claim tax deductions on an existing home loan?",
         "input_type": "select",
         "options": ["No", "Yes"],
         "default": "No",
@@ -337,38 +341,38 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "S16",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Employee Provident Fund (EPF) Balance > ₹3,00,000?",
+        "label": "Is your Provident Fund (EPF) balance above ₹3 Lakhs?",
         "input_type": "select",
-        "options": ["Yes", "No"],
-        "default": "Yes",
+        "options": ["No", "Yes"],
+        "default": "No",
         "weight": 1.5,
         "impact": "O4, Stress",
-        "why_we_ask": "Serves as an emergency distress backstop, reducing vulnerability during macroeconomic shocks."
+        "why_we_ask": "Serves as an emergency distress cushion, reducing vulnerability during economic shocks."
     },
     "has_health_insurance": {
         "id": "S17",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Employer Comprehensive Health Insurance?",
+        "label": "Do you have comprehensive health insurance?",
         "input_type": "select",
-        "options": ["Yes", "No"],
-        "default": "Yes",
+        "options": ["No", "Yes"],
+        "default": "No",
         "weight": 1.0,
         "impact": "O4",
-        "why_we_ask": "Comprehensive medical coverage reduces the cash emergency reserve deduction in the safe cash formula."
+        "why_we_ask": "Comprehensive medical coverage lowers required monthly emergency cash deductions."
     },
     "unsecured_loan_count": {
         "id": "S18",
         "tier": "Variable",
         "category": "Salaried",
-        "label": "Count of Active Unsecured Personal Loans",
+        "label": "How many personal loans are you currently paying off?",
         "input_type": "number",
         "default": 0,
         "min": 0,
         "step": 1,
         "weight": 1.5,
         "impact": "O3",
-        "why_we_ask": "Holding more than 2 active personal loans triggers multi-loan leverage spread penalties (+1.0%)."
+        "why_we_ask": "Having more than 2 active personal loans adds a 1.0% multi-loan leverage penalty."
     },
 
     # =========================================================================
@@ -378,96 +382,96 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "B01",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Net Taxable Profit on Latest Filed ITR (₹/year)",
+        "label": "Annual net profit reported on your latest ITR (₹)",
         "input_type": "number",
-        "default": 420000,
+        "default": 0,
         "min": 0,
         "step": 25000,
         "weight": 3.0,
         "impact": "O2",
-        "why_we_ask": "Sets the hard ceiling for traditional unsecured banking credit; low reported ITR triggers loan rejections."
+        "why_we_ask": "Sets the hard ceiling for traditional unsecured banking credit; low reported ITR triggers loan caps."
     },
     "itr_filing_years": {
         "id": "B02",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Consecutive Years of Filed Business ITRs",
+        "label": "How many continuous years have you filed business ITRs?",
         "input_type": "number",
         "default": 3,
         "min": 0,
         "step": 1,
         "weight": 2.0,
         "impact": "O3",
-        "why_we_ask": "Three or more years of filed ITRs proves enterprise stability, cutting lending spreads by 0.75%."
+        "why_we_ask": "Three or more years of filed ITRs proves stability, cutting lending spreads by 0.75%."
     },
     "gross_monthly_cash_intake": {
         "id": "B03",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Gross Monthly Business Cash Intake (₹)",
+        "label": "Average monthly cash and UPI sales intake (₹)",
         "input_type": "number",
-        "default": 85000,
-        "min": 10000,
-        "step": 5000,
+        "default": 0,
+        "min": 0,
+        "step": 10000,
         "weight": 2.5,
         "impact": "O2, O4",
-        "why_we_ask": "Captures real operating liquidity to calculate your true debt-servicing capacity rather than artificial tax numbers."
+        "why_we_ask": "Evaluates real operating cash flow to benchmark safe borrowing capacity."
     },
     "has_unencumbered_property": {
         "id": "B04",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Own Debt-Free Commercial Shop or Residential Property?",
+        "label": "Do you own a property or shop with no loan on it?",
         "input_type": "select",
-        "options": ["Yes", "No"],
-        "default": "Yes",
+        "options": ["No", "Yes"],
+        "default": "No",
         "weight": 3.5,
         "impact": "O1, O3 (Product Pivot)",
-        "why_we_ask": "Critical Product Pivot: switches your loan from predatory 18%+ unsecured lines to 9.75%–10.5% LAP."
+        "why_we_ask": "Critical Product Pivot: switches your loan from 18%+ unsecured lines to 9.5%–11% LAP."
     },
     "property_market_value": {
         "id": "B05",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Conservative Market Value of Unencumbered Property (₹)",
+        "label": "Conservative market value of this loan-free property (₹)",
         "input_type": "number",
-        "default": 4500000,
+        "default": 0,
         "min": 0,
         "step": 100000,
         "weight": 2.5,
         "impact": "O2",
-        "why_we_ask": "Determines maximum LAP sanction capacity using standard conservative 50%–55% Loan-to-Value (LTV)."
+        "why_we_ask": "Determines maximum LAP sanction capacity using standard conservative 50%–60% Loan-to-Value (LTV)."
     },
     "title_deed_clarity": {
         "id": "B06",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Registered Title Deed Clear & in Your Name?",
+        "label": "Is the property title deed clear and in your name?",
         "input_type": "select",
         "options": ["Yes", "No"],
         "default": "Yes",
         "weight": 2.0,
         "impact": "O3",
-        "why_we_ask": "Clear registered property title narrows the LAP spread; unpartitioned titles widen interest uncertainty."
+        "why_we_ask": "Clear registered property title narrows the LAP spread; unclear title widens interest rate uncertainty."
     },
     "business_vintage_years": {
         "id": "B07",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Continuous Years Enterprise Has Operated at Location",
+        "label": "How many years has your business operated at this location?",
         "input_type": "number",
-        "default": 14,
+        "default": 5,
         "min": 0,
         "step": 1,
         "weight": 2.0,
         "impact": "O3",
-        "why_we_ask": "Five or more years of local shop vintage eliminates relocation risk, earning rate reductions of 0.50%."
+        "why_we_ask": "Five or more years of local shop vintage eliminates relocation risk, cutting rate spreads by 0.50%."
     },
     "business_premises_ownership": {
         "id": "B08",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Business Premises Ownership Type",
+        "label": "Do you own or rent your business shop/office?",
         "input_type": "select",
         "options": ["Owned (No Rent)", "Rented / Commercial Lease"],
         "default": "Owned (No Rent)",
@@ -475,60 +479,73 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "impact": "O2, O4",
         "why_we_ask": "An owned store eliminates rental overhead, permanently protecting operating profit margins."
     },
-    "seasonal_variance_high": {
+    "annual_gstr3b_turnover": {
         "id": "B09",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Does Monthly Revenue Fluctuate by >35% Across Seasons?",
-        "input_type": "select",
-        "options": ["Yes (Monsoon Drop)", "No (Consistent)"],
-        "default": "Yes (Monsoon Drop)",
-        "weight": 4.0,
-        "impact": "O4",
-        "why_we_ask": "High seasonality anchors your safe EMI strictly to the lowest trough month so you never default during monsoon."
+        "label": "Annual business turnover reported on GST (GSTR-3B, ₹)",
+        "input_type": "number",
+        "default": 0,
+        "min": 0,
+        "step": 50000,
+        "weight": 2.0,
+        "impact": "O2",
+        "why_we_ask": "Unlocks GST surrogate credit lines sanctioning up to 10%–15% of verified turnover."
     },
-    "co_applicant_income_msme": {
+    "seasonal_variance_high": {
         "id": "B10",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Earning Spouse / Co-Applicant Monthly Income (₹)",
-        "input_type": "number",
-        "default": 18000,
-        "min": 0,
-        "step": 2000,
-        "weight": 4.0,
-        "impact": "O2, O4",
-        "why_we_ask": "Adds secondary steady household earnings (e.g. teaching salary) to cushion merchant cash flow."
+        "label": "Does monthly sales drop by >35% during slow seasons?",
+        "input_type": "select",
+        "options": ["No (Consistent)", "Yes (Seasonal Drops)"],
+        "default": "No (Consistent)",
+        "weight": 1.5,
+        "impact": "O4",
+        "why_we_ask": "If revenue drops >35% in low season, anchors safe EMI to the trough month so you never default."
     },
-    "commercial_vehicle_assets": {
+    "co_applicant_income_msme": {
         "id": "B11",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Own Commercial Delivery Vehicles Free of Debt?",
-        "input_type": "select",
-        "options": ["Yes", "No"],
-        "default": "No",
-        "weight": 1.5,
-        "impact": "O3",
-        "why_we_ask": "Provides movable asset backing, qualifying you for lower equipment finance spreads."
+        "label": "Other monthly family or spouse income supporting household (₹)",
+        "input_type": "number",
+        "default": 0,
+        "min": 0,
+        "step": 2000,
+        "weight": 2.0,
+        "impact": "O2, O4",
+        "why_we_ask": "Adds verified secondary family cash flow to debt-servicing limits."
     },
-    "supplier_payment_terms": {
+    "commercial_vehicle_assets": {
         "id": "B12",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Supplier Payment Terms",
+        "label": "Do you own commercial vehicles (delivery vans, autos) free of debt?",
         "input_type": "select",
-        "options": ["Immediate Cash Only", "15–30 Days Credit", "60+ Days"],
-        "default": "Immediate Cash Only",
+        "options": ["No", "Yes"],
+        "default": "No",
+        "weight": 1.5,
+        "impact": "O3",
+        "why_we_ask": "Provides secondary movable asset security, reducing equipment rate spreads."
+    },
+    "supplier_payment_terms": {
+        "id": "B13",
+        "tier": "Variable",
+        "category": "Self-Employed / MSME",
+        "label": "How do you pay your main suppliers?",
+        "input_type": "select",
+        "options": ["15–30 Days Credit", "Immediate Cash Only", "60+ Days Credit"],
+        "default": "15–30 Days Credit",
         "weight": 1.5,
         "impact": "O4",
         "why_we_ask": "Immediate cash-only suppliers require higher cash cushions, reducing safe borrowing headroom."
     },
     "customer_receivables_days": {
-        "id": "B13",
+        "id": "B14",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Customer Credit Locked in Unpaid Dues (Days)",
+        "label": "Average days customers take to pay credit dues",
         "input_type": "number",
         "default": 30,
         "min": 0,
@@ -538,12 +555,12 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "why_we_ask": "Over 45 days of uncollected customer credit applies a 10% haircut on monthly operating cash."
     },
     "average_bank_balance": {
-        "id": "B14",
+        "id": "B15",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Average Daily Bank Balance (ABB, ₹)",
+        "label": "Average daily bank account balance (ABB, ₹)",
         "input_type": "number",
-        "default": 50000,
+        "default": 0,
         "min": 0,
         "step": 5000,
         "weight": 2.0,
@@ -551,10 +568,10 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "why_we_ask": "Maintaining a healthy daily credit balance in current accounts cuts lending spreads by up to 1.0%."
     },
     "unsecured_mca_portion_pct": {
-        "id": "B15",
+        "id": "B16",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Share of Current Debt in Merchant Cash Advances / Apps (%)",
+        "label": "Roughly what % of current debt is daily/app merchant loans?",
         "input_type": "number",
         "default": 0,
         "min": 0,
@@ -565,42 +582,29 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "why_we_ask": "High short-term merchant advance debt flags severe cash stretch, prompting a Borrow Less warning."
     },
     "expansion_margin_boost": {
-        "id": "B16",
+        "id": "B17",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Projected Net Monthly Margin from New Stock Line (₹)",
+        "label": "Expected extra monthly profit this loan will generate (₹)",
         "input_type": "number",
-        "default": 15000,
+        "default": 0,
         "min": 0,
         "step": 2000,
         "weight": 1.5,
         "impact": "O2, O4",
-        "why_we_ask": "Incremental profits generated by new stock are credited toward future safe repayment capacity."
+        "why_we_ask": "Incremental earnings from new stock/equipment are credited toward future safe repayment capacity."
     },
     "statutory_gst_disputes": {
-        "id": "B17",
+        "id": "B18",
         "tier": "Variable",
         "category": "Self-Employed / MSME",
-        "label": "Any Pending Tax or Municipal Legal Demands?",
+        "label": "Any pending tax notices or GST legal disputes?",
         "input_type": "select",
         "options": ["No", "Yes"],
         "default": "No",
         "weight": 1.0,
         "impact": "O3",
         "why_we_ask": "Active tax disputes widen loan spreads by 1.50% and bar access to prime institutional lenders."
-    },
-    "annual_gstr3b_turnover": {
-        "id": "B18",
-        "tier": "Variable",
-        "category": "Self-Employed / MSME",
-        "label": "Annual Gross GSTR-3B Turnover (₹, Optional)",
-        "input_type": "number",
-        "default": 0,
-        "min": 0,
-        "step": 50000,
-        "weight": 2.0,
-        "impact": "O2",
-        "why_we_ask": "Verifiable GST filings unlock surrogate bank credit lines up to 10%–15% of annual turnover."
     },
 
     # =========================================================================
@@ -610,64 +614,64 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I01",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Auto-Debit / EMI Bounces in the Last 6 Months",
+        "label": "Missed or bounced loan payments in the last 6 months",
         "input_type": "number",
-        "default": 1,
+        "default": 0,
         "min": 0,
         "step": 1,
         "weight": 3.5,
         "impact": "O1 (Kill-Switch)",
-        "why_we_ask": "Mandatory Kill-Switch: Any active bounce in 6 months indicates acute default distress, triggering Don't Borrow."
+        "why_we_ask": "Mandatory Kill-Switch: Any active bounce in 6 months indicates default distress, triggering Don't Borrow."
     },
     "active_app_loan_count": {
         "id": "I02",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Count of Active Instant Digital Loan Apps",
+        "label": "How many instant loan apps do you currently have loans with?",
         "input_type": "number",
-        "default": 3,
+        "default": 0,
         "min": 0,
         "step": 1,
-        "weight": 3.0,
+        "weight": 2.5,
         "impact": "O1, O2",
-        "why_we_ask": "Identifies high-frequency digital leverage and activates mandatory debt consolidation rules."
+        "why_we_ask": "Identifies short-term digital leverage and triggers mandatory debt consolidation rules."
     },
     "app_loan_balance_total": {
         "id": "I03",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Total Outstanding Digital App Loan Debt (₹)",
+        "label": "Total balance left to clear across all digital loan apps (₹)",
         "input_type": "number",
-        "default": 35000,
+        "default": 0,
         "min": 0,
         "step": 5000,
-        "weight": 3.0,
+        "weight": 2.5,
         "impact": "O1, O2",
-        "why_we_ask": "Quantifies the exact predatory debt that must be cleared before taking on any new credit."
+        "why_we_ask": "Quantifies the predatory debt that must be cleared before taking on any new credit."
     },
     "app_loan_apr": {
         "id": "I04",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Highest Interest Rate Charged by Digital Apps (% APR)",
+        "label": "Highest annual interest rate on your app loans (% APR)",
         "input_type": "number",
-        "default": 36.0,
+        "default": 0.0,
         "min": 0.0,
         "step": 1.0,
-        "weight": 3.0,
+        "weight": 2.5,
         "impact": "O1, O3",
-        "why_we_ask": "Interest above 24% triggers our predatory debt rule, blocking new borrowing until high-cost apps are cleared."
+        "why_we_ask": "Interest above 24% triggers our predatory debt policy, blocking non-essential debt."
     },
     "productive_income_boost": {
         "id": "I05",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Projected Monthly Income Boost from New Asset (₹)",
+        "label": "Extra monthly income this tool/vehicle will help you earn (₹)",
         "input_type": "number",
-        "default": 3500,
+        "default": 0,
         "min": 0,
         "step": 500,
-        "weight": 3.5,
+        "weight": 3.0,
         "impact": "O2, O4",
         "why_we_ask": "Incremental earnings (e.g. EV fuel savings) are credited toward future safe loan repayment capacity."
     },
@@ -675,11 +679,11 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I06",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Platform Payout Mode",
+        "label": "How do you receive your work payouts?",
         "input_type": "select",
-        "options": ["Digital App Payouts (UPI/Bank)", "Unrecorded Cash In Hand"],
-        "default": "Digital App Payouts (UPI/Bank)",
-        "weight": 3.0,
+        "options": ["Digital App / Bank Transfer", "Unrecorded Cash In Hand"],
+        "default": "Digital App / Bank Transfer",
+        "weight": 2.5,
         "impact": "O3",
         "why_we_ask": "Verifiable digital platform payouts unlock priority sector commercial EV rates (11%–13%) over personal loans."
     },
@@ -687,13 +691,13 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I07",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Active Delivery / Work Days Per Month",
+        "label": "How many days per month do you actively work on trips/orders?",
         "input_type": "number",
         "default": 24,
         "min": 0,
         "max": 31,
         "step": 1,
-        "weight": 3.0,
+        "weight": 2.0,
         "impact": "O2",
         "why_we_ask": "24 or more days validates full-time earnings; under 15 days triggers a 20% volatility haircut."
     },
@@ -701,23 +705,23 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I08",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Count of Adult Earning Members in Household",
+        "label": "How many adults in your household earn an income?",
         "input_type": "number",
         "default": 1,
         "min": 1,
         "step": 1,
         "weight": 1.5,
         "impact": "O4",
-        "why_we_ask": "Quantifies income redundancy: single-earner households face greater vulnerability to medical or job shocks."
+        "why_we_ask": "Quantifies income redundancy: single-earner households face greater vulnerability to shocks."
     },
     "spouse_employment_status": {
         "id": "I09",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Spouse Employment Status",
+        "label": "Spouse's current work status",
         "input_type": "select",
-        "options": ["Employed / Earning", "Seeking Work", "Long-Term Unemployed (6+ mos)"],
-        "default": "Long-Term Unemployed (6+ mos)",
+        "options": ["Employed / Earning", "Homemaker / Not Seeking Work", "Long-Term Unemployed (6+ mos)"],
+        "default": "Homemaker / Not Seeking Work",
         "weight": 2.0,
         "impact": "O4, Stress",
         "why_we_ask": "A long-term unemployed spouse increases the stress shock factor from 20% to 30% of income."
@@ -726,9 +730,9 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I10",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Number of Dependent Children",
+        "label": "Number of dependent children living with you",
         "input_type": "number",
-        "default": 2,
+        "default": 0,
         "min": 0,
         "step": 1,
         "weight": 1.5,
@@ -739,10 +743,10 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I11",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Secondary Home Trade (e.g., Home Tailoring)",
+        "label": "Do you or your family have a side trade (tailoring, repairs, etc.)?",
         "input_type": "select",
-        "options": ["Yes (Active Secondary Income)", "No"],
-        "default": "Yes (Active Secondary Income)",
+        "options": ["No", "Yes (Active Side Income)"],
+        "default": "No",
         "weight": 1.5,
         "impact": "O4",
         "why_we_ask": "Diversified household earnings cushion potential downtime from vehicle repairs or platform drops."
@@ -751,7 +755,7 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I12",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Liquid Emergency Cash or Gold Held (₹)",
+        "label": "Emergency cash or gold savings you can sell in crisis (₹)",
         "input_type": "number",
         "default": 0,
         "min": 0,
@@ -764,10 +768,10 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I13",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Financing a Commercial Electric Vehicle (EV)?",
+        "label": "Is this loan for an Electric Vehicle (EV) that saves on fuel?",
         "input_type": "select",
-        "options": ["Yes (Replaces Petrol Scooter)", "No"],
-        "default": "Yes (Replaces Petrol Scooter)",
+        "options": ["No", "Yes (Replaces Petrol Scooter)"],
+        "default": "No",
         "weight": 2.0,
         "impact": "O3, O4",
         "why_we_ask": "EV adoption saves ~₹3,500/month in petrol costs, which is directly credited toward servicing the vehicle installment."
@@ -776,7 +780,7 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I14",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Owe Debt to Informal Daily/Weekly Lenders?",
+        "label": "Do you owe money to local daily/weekly cash moneylenders?",
         "input_type": "select",
         "options": ["No", "Yes"],
         "default": "No",
@@ -788,10 +792,10 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I15",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Commercial Driver Badge / Clean Registration?",
+        "label": "Do you have a commercial driver badge or commercial license?",
         "input_type": "select",
-        "options": ["Yes", "No"],
-        "default": "Yes",
+        "options": ["No", "Yes"],
+        "default": "No",
         "weight": 1.5,
         "impact": "O3",
         "why_we_ask": "Commercial badge unlocks asset-hypothecated financing and clean state priority sector subsidies."
@@ -800,10 +804,10 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I16",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Currently Paying Smartphone Installment?",
+        "label": "Are you currently paying off a mobile phone on EMI?",
         "input_type": "select",
-        "options": ["Yes", "No"],
-        "default": "Yes",
+        "options": ["No", "Yes"],
+        "default": "No",
         "weight": 1.0,
         "impact": "O4",
         "why_we_ask": "Smartphone installments must be prioritized: default halts mobile app access and stops all delivery income."
@@ -812,7 +816,7 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I17",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Incurred Uninsured Medical Emergency in Past Year?",
+        "label": "Did your family face a major unpaid hospital bill in the past year?",
         "input_type": "select",
         "options": ["No", "Yes"],
         "default": "No",
@@ -824,7 +828,7 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
         "id": "I18",
         "tier": "Variable",
         "category": "Informal / Gig Economy",
-        "label": "Registered SHG / JLG Group Member?",
+        "label": "Are you a member of a Self-Help Group (SHG / JLG)?",
         "input_type": "select",
         "options": ["No", "Yes"],
         "default": "No",
@@ -838,7 +842,7 @@ MASTER_QUESTIONS: Dict[str, Dict[str, Any]] = {
 def get_questions_for_category(category: str) -> List[Dict[str, Any]]:
     """
     Returns the list of question definitions matching the user's category track.
-    Always includes the 10 Universal Mandatory questions.
+    Always includes the 10 Universal Mandatory questions followed by the 18 sector questions.
     """
     cat_lower = (category or "salaried").lower()
     active_questions = []
@@ -850,12 +854,20 @@ def get_questions_for_category(category: str) -> List[Dict[str, Any]]:
             active_questions.append(q_copy)
         elif "salaried" in cat_lower and q["category"] == "Salaried":
             active_questions.append(q_copy)
-        elif ("self" in cat_lower or "msme" in cat_lower) and q["category"] == "Self-Employed / MSME":
+        elif ("self" in cat_lower or "msme" in cat_lower or "business" in cat_lower) and q["category"] == "Self-Employed / MSME":
             active_questions.append(q_copy)
-        elif ("informal" in cat_lower or "gig" in cat_lower) and q["category"] == "Informal / Gig Economy":
+        elif ("informal" in cat_lower or "gig" in cat_lower or "freelance" in cat_lower or "other" in cat_lower) and q["category"] == "Informal / Gig Economy":
             active_questions.append(q_copy)
 
     return active_questions
+
+
+def get_variable_questions_for_category(category: str) -> List[Dict[str, Any]]:
+    """
+    Returns precisely the 18 optional variable questions for the given category track.
+    """
+    all_qs = get_questions_for_category(category)
+    return [q for q in all_qs if q.get("tier") == "Variable"]
 
 
 def compute_confidence_score(answered_profile: Dict[str, Any], category: str) -> float:
@@ -875,7 +887,7 @@ def compute_confidence_score(answered_profile: Dict[str, Any], category: str) ->
     mandatory_answered = 0
     for k in mandatory_keys:
         v = answered_profile.get(k)
-        if v is not None and v != "" and v != "Please select...":
+        if v is not None and v != "" and v != "Select one" and v != "Please select...":
             mandatory_answered += 1
 
     score = (mandatory_answered / 10.0) * 60.0
@@ -886,11 +898,17 @@ def compute_confidence_score(answered_profile: Dict[str, Any], category: str) ->
                 q = MASTER_QUESTIONS[key]
                 if q["tier"] == "Variable":
                     # Check category match
-                    if ("salaried" in cat_lower and q["category"] == "Salaried") or \
-                       (("self" in cat_lower or "msme" in cat_lower) and q["category"] == "Self-Employed / MSME") or \
-                       (("informal" in cat_lower or "gig" in cat_lower) and q["category"] == "Informal / Gig Economy"):
+                    is_match = False
+                    if "salaried" in cat_lower and q["category"] == "Salaried":
+                        is_match = True
+                    elif ("self" in cat_lower or "msme" in cat_lower or "business" in cat_lower) and q["category"] == "Self-Employed / MSME":
+                        is_match = True
+                    elif ("informal" in cat_lower or "gig" in cat_lower or "freelance" in cat_lower or "other" in cat_lower) and q["category"] == "Informal / Gig Economy":
+                        is_match = True
+
+                    if is_match:
                         # Check if answered with non-trivial value
-                        if val is not None and val != "" and val != "Please select...":
+                        if val is not None and val != "" and val != "Select one" and val != "Please select...":
                             score += float(q["weight"])
 
     return round(min(95.0, max(0.0, score)), 1)

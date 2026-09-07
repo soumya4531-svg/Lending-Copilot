@@ -1,0 +1,1768 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Borrower Copilot — Know your safe borrowing limit</title>
+    <meta
+      name="description"
+      content="Check how much you can safely borrow before you apply for a personal loan. No login, no credit check — just your own numbers."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-soft: #f7f2f0;
+        --bg-soft-2: #f3ecef;
+        --fg: #241a22;
+        --fg-muted: #6e6169;
+        --fg-faint: #978c90;
+        --brand: #4b2440;
+        --brand-dark: #341830;
+        --brand-soft: #f1e6ed;
+        --border: #e6dfe0;
+        --good: #2e7d5b;
+        --good-soft: #e7f3ec;
+        --warn: #ad3e33;
+        --warn-soft: #fbeae7;
+        --radius-lg: 16px;
+        --radius-md: 10px;
+        --radius-sm: 6px;
+        --measure: 1120px;
+        --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+        --fs-h1: clamp(2rem, 4vw, 2.9rem);
+        --fs-h2: clamp(1.5rem, 2.6vw, 2rem);
+        --fs-h3: 1.2rem;
+        --fs-body: 1.02rem;
+        --fs-meta: 0.86rem;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: "Poppins", system-ui, sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+        font-size: var(--fs-body);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+      h1, h2, h3, h4 {
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        line-height: 1.22;
+        margin: 0;
+        letter-spacing: -0.01em;
+      }
+      p {
+        margin: 0;
+      }
+      a {
+        color: inherit;
+      }
+      .wrap {
+        max-width: var(--measure);
+        margin: 0 auto;
+        padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+      }
+
+      /* ---------- Top bar ---------- */
+      .topbar {
+        border-bottom: 1px solid var(--border);
+      }
+      .topbar .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1.35rem;
+        padding-bottom: 1.35rem;
+      }
+      .brandmark {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 600;
+        font-size: 1.05rem;
+      }
+      .brandmark .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--brand);
+        display: inline-block;
+      }
+      .topbar .status {
+        font-size: var(--fs-meta);
+        color: var(--fg-muted);
+      }
+      .topbar .status b {
+        color: var(--brand);
+        font-weight: 600;
+      }
+
+      /* ---------- Hero ---------- */
+      .hero {
+        padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(1.5rem, 4vw, 2.5rem);
+      }
+      .hero-inner {
+        max-width: 720px;
+      }
+      .eyebrow {
+        font-size: var(--fs-meta);
+        color: var(--brand);
+        font-weight: 600;
+        margin-bottom: 0.9rem;
+        display: block;
+      }
+      .hero h1 {
+        font-size: var(--fs-h1);
+        margin-bottom: 1.1rem;
+      }
+      .hero .lede {
+        font-size: 1.12rem;
+        color: var(--fg-muted);
+        max-width: 56ch;
+      }
+      .trust-line {
+        margin-top: 1.4rem;
+        font-size: var(--fs-meta);
+        color: var(--fg-faint);
+      }
+
+      .signals {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0;
+        margin-top: 2.4rem;
+        border-top: 1px solid var(--border);
+      }
+      .signals div {
+        padding: 1.1rem 1.2rem 1.1rem 0;
+        border-right: 1px solid var(--border);
+      }
+      .signals div:last-child {
+        border-right: none;
+      }
+      .signals .k {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        color: var(--brand);
+        display: block;
+        margin-bottom: 0.35rem;
+      }
+      .signals .v {
+        font-size: 0.92rem;
+        color: var(--fg-muted);
+      }
+      @media (max-width: 820px) {
+        .signals {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .signals div {
+          border-right: 1px solid var(--border);
+        }
+        .signals div:nth-child(2n) {
+          border-right: none;
+        }
+      }
+
+      /* ---------- Photo block ---------- */
+      .photo-block {
+        padding: clamp(2rem, 5vw, 3rem) 0;
+      }
+      .photo-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: var(--bg-soft);
+      }
+      .photo-card img {
+        display: block;
+        width: 100%;
+        max-height: 420px;
+        object-fit: cover;
+        object-position: center 25%;
+      }
+      .photo-caption {
+        padding: 1.1rem 1.4rem;
+        font-size: 0.95rem;
+        color: var(--fg-muted);
+        font-style: italic;
+        border-top: 1px solid var(--border);
+      }
+
+      /* ---------- Dynamic Floating Accuracy Meter ---------- */
+      .accuracy-dock {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0.75rem;
+        z-index: 9999;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 0.9rem 1.25rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 8px 24px -4px rgba(75, 36, 64, 0.16), 0 2px 6px rgba(0, 0, 0, 0.06);
+        transition: box-shadow 0.2s ease;
+      }
+      .acc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.4rem;
+      }
+      .acc-title {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--brand);
+      }
+      .acc-badge {
+        font-size: 0.76rem;
+        font-weight: 600;
+        padding: 0.2rem 0.65rem;
+        border-radius: 99px;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .acc-bar-bg {
+        width: 100%;
+        height: 7px;
+        background-color: var(--border);
+        border-radius: 99px;
+        overflow: hidden;
+        margin-bottom: 0.4rem;
+      }
+      .acc-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #ad3e33, #4b2440, #2e7d5b);
+        border-radius: 99px;
+        transition: width 0.3s ease;
+      }
+      .acc-desc {
+        font-size: 0.82rem;
+        color: var(--fg-muted);
+        line-height: 1.4;
+      }
+
+      /* ---------- Form card ---------- */
+      .card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: clamp(1.5rem, 3vw, 2.25rem);
+      }
+      .step {
+        margin-top: 1.5rem;
+      }
+      .step-head {
+        display: flex;
+        align-items: baseline;
+        gap: 0.7rem;
+        margin-bottom: 0.4rem;
+      }
+      .step-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.85rem;
+        color: var(--brand);
+        border: 1px solid var(--brand-soft);
+        background: var(--brand-soft);
+        border-radius: 99px;
+        width: 1.9rem;
+        height: 1.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: none;
+      }
+      .step-head h3 {
+        font-size: var(--fs-h3);
+      }
+      .step-sub {
+        color: var(--fg-muted);
+        font-size: 0.92rem;
+        margin: 0.15rem 0 1.2rem 2.6rem;
+      }
+
+      .qgrid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.1rem 1.4rem;
+      }
+      @media (max-width: 700px) {
+        .qgrid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .q {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .q.full {
+        grid-column: 1 / -1;
+      }
+      .q label {
+        font-size: 0.92rem;
+        font-weight: 500;
+      }
+      .q .hint {
+        font-size: 0.82rem;
+        color: var(--fg-faint);
+      }
+      select,
+      input[type="number"],
+      input[type="text"] {
+        font-family: "Poppins", sans-serif;
+        font-size: 0.98rem;
+        padding: 0.7rem 0.85rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background: var(--bg);
+        color: var(--fg);
+        width: 100%;
+        transition: border-color 0.15s var(--ease);
+      }
+      select:focus,
+      input:focus {
+        outline: none;
+        border-color: var(--brand);
+      }
+      .prefix-field {
+        position: relative;
+      }
+      .prefix-field .prefix {
+        position: absolute;
+        left: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--fg-faint);
+        font-size: 0.95rem;
+      }
+      .prefix-field input {
+        padding-left: 1.6rem;
+      }
+
+      .more-note {
+        margin-top: 1.6rem;
+        padding-top: 1.4rem;
+        border-top: 1px dashed var(--border);
+        font-size: 0.9rem;
+        color: var(--fg-muted);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        font-size: 0.98rem;
+        padding: 0.95rem 1.9rem;
+        border-radius: 99px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: transform 0.12s var(--ease), background 0.15s var(--ease), box-shadow 0.15s var(--ease);
+        text-decoration: none;
+      }
+      .btn-primary {
+        background: var(--brand);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--brand-dark);
+      }
+      .btn-primary:active {
+        transform: scale(0.98);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--brand);
+        border-color: var(--border);
+      }
+      .btn-ghost:hover {
+        border-color: var(--brand);
+      }
+
+      .cta-row {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.9rem;
+        margin-top: 2.2rem;
+        text-align: center;
+      }
+      .cta-sub {
+        font-size: 0.85rem;
+        color: var(--fg-faint);
+      }
+
+      /* ---------- Results ---------- */
+      #results {
+        display: none;
+      }
+      #results.show {
+        display: block;
+      }
+      #results-section, .verdict {
+        scroll-margin-top: 100px;
+      }
+      #form-section {
+        scroll-margin-top: 25px;
+      }
+      .verdict {
+        border-radius: var(--radius-lg);
+        padding: clamp(1.5rem, 3vw, 2rem);
+        display: flex;
+        align-items: flex-start;
+        gap: 1.1rem;
+        border: 1px solid var(--border);
+      }
+      .verdict.borrow {
+        background: var(--good-soft);
+        border-color: #cfe7da;
+      }
+      .verdict.less {
+        background: var(--brand-soft);
+        border-color: #e3cfda;
+      }
+      .verdict.no {
+        background: var(--warn-soft);
+        border-color: #f0d3ce;
+      }
+      .verdict .mark {
+        font-size: 1.7rem;
+        line-height: 1;
+        flex: none;
+        margin-top: 0.1rem;
+      }
+      .verdict h2 {
+        font-size: 1.35rem;
+        margin-bottom: 0.4rem;
+      }
+      .verdict.borrow h2 {
+        color: var(--good);
+      }
+      .verdict.less h2 {
+        color: var(--brand);
+      }
+      .verdict.no h2 {
+        color: var(--warn);
+      }
+      .verdict p {
+        color: var(--fg);
+        opacity: 0.85;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+        margin-top: 1.25rem;
+      }
+      @media (max-width: 760px) {
+        .result-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .result-card {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        background: var(--bg);
+      }
+      .result-card h3 {
+        font-size: 1.02rem;
+        margin-bottom: 1rem;
+      }
+      .figure-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .figure-row:last-of-type {
+        border-bottom: none;
+      }
+      .figure-row .label {
+        color: var(--fg-muted);
+        font-size: 0.9rem;
+      }
+      .figure-row .value {
+        font-family: "JetBrains Mono", monospace;
+        font-weight: 600;
+        font-size: 1.02rem;
+      }
+      .figure-row .value.big {
+        font-size: 1.2rem;
+        color: var(--brand);
+      }
+      .callout {
+        margin-top: 1rem;
+        padding: 0.9rem 1rem;
+        background: var(--bg-soft);
+        border-radius: var(--radius-sm);
+        font-size: 0.88rem;
+        color: var(--fg-muted);
+      }
+      .callout b {
+        color: var(--fg);
+      }
+      .pill-note {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        padding: 0.4rem 0.8rem;
+        border-radius: 99px;
+        margin-top: 0.5rem;
+      }
+      .pill-note.ok {
+        background: var(--good-soft);
+        color: var(--good);
+      }
+      .pill-note.bad {
+        background: var(--warn-soft);
+        color: var(--warn);
+      }
+
+      .compare-wrap {
+        overflow-x: auto;
+        margin-top: 1rem;
+      }
+      table.compare {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        min-width: 520px;
+      }
+      table.compare th,
+      table.compare td {
+        padding: 0.7rem 0.6rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+      table.compare th {
+        color: var(--fg-muted);
+        font-weight: 500;
+        font-size: 0.82rem;
+      }
+      table.compare td.mono,
+      table.compare th.mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+      table.compare tr.current td {
+        background: var(--brand-soft);
+        font-weight: 600;
+      }
+      table.compare tr.current td:first-child {
+        border-top-left-radius: var(--radius-sm);
+        border-bottom-left-radius: var(--radius-sm);
+      }
+      table.compare tr.current td:last-child {
+        border-top-right-radius: var(--radius-sm);
+        border-bottom-right-radius: var(--radius-sm);
+      }
+
+      .negotiation {
+        margin-top: 1.25rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: clamp(1.5rem, 3vw, 2.25rem);
+        background: var(--bg-soft);
+      }
+      .negotiation h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1.2rem;
+      }
+      .neg-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      @media (max-width: 760px) {
+        .neg-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .neg-block h4 {
+        font-size: 0.82rem;
+        color: var(--brand);
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+      }
+      .neg-block ul {
+        margin: 0;
+        padding-left: 1.1rem;
+      }
+      .neg-block li {
+        margin-bottom: 0.45rem;
+        font-size: 0.92rem;
+      }
+      .script-box {
+        margin-top: 1.3rem;
+        background: var(--bg);
+        border: 1px dashed var(--border);
+        border-radius: var(--radius-md);
+        padding: 1.1rem 1.25rem;
+        font-size: 0.92rem;
+        font-style: italic;
+        color: var(--fg);
+      }
+
+      .no-borrow-card {
+        border: 1px solid #f0d3ce;
+        background: var(--warn-soft);
+        border-radius: var(--radius-lg);
+        padding: clamp(1.5rem, 3vw, 2rem);
+        margin-top: 1.25rem;
+      }
+      .no-borrow-card h3 {
+        color: var(--warn);
+        margin-bottom: 0.7rem;
+      }
+      .no-borrow-card ol {
+        margin: 0.8rem 0 0;
+        padding-left: 1.2rem;
+      }
+      .no-borrow-card li {
+        margin-bottom: 0.4rem;
+      }
+
+      /* Persona preview cards */
+      .persona-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-top: 1.2rem;
+      }
+      @media (max-width: 760px) {
+        .persona-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .persona-box {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 1.1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      .persona-box b {
+        color: var(--brand);
+      }
+      .persona-box .meta {
+        font-size: 0.75rem;
+        color: var(--fg-muted);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin: 0.2rem 0 0.5rem;
+      }
+      .persona-box p {
+        font-size: 0.86rem;
+        color: var(--fg);
+        line-height: 1.45;
+        margin-bottom: 0.9rem;
+      }
+
+      .footer-actions {
+        display: flex;
+        gap: 0.9rem;
+        justify-content: center;
+        margin-top: 2rem;
+        flex-wrap: wrap;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        margin-top: 2.5rem;
+        padding: 2rem 0;
+      }
+      footer .fine {
+        font-size: 0.82rem;
+        color: var(--fg-faint);
+        max-width: 80ch;
+      }
+      footer .fine + .fine {
+        margin-top: 0.6rem;
+      }
+      footer .foot-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+      }
+      footer .foot-row .brandmark {
+        font-size: 0.95rem;
+      }
+
+      details {
+        margin-top: 1.5rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        background: var(--bg);
+        padding: 0.9rem 1.25rem;
+      }
+      details summary {
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--brand);
+        font-size: 0.96rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="wrap">
+        <div class="brandmark"><span class="dot"></span>Borrower Copilot</div>
+        <div class="status" id="topStatus">Status: <b>Not started</b></div>
+      </div>
+    </div>
+
+    <header class="hero">
+      <div class="wrap">
+        <div class="hero-inner">
+          <span class="eyebrow">Loan borrowing guide</span>
+          <h1>Complete Borrower Insight: Know Your Borrowing Limit</h1>
+          <p class="lede">
+            Before you walk into a lender, answer a few honest questions about
+            your income and expenses. You'll get a clear number for what you can
+            afford, a fair interest rate to ask for, and a one-page guide for
+            the conversation with your bank.
+          </p>
+          <p class="trust-line">
+            No login required · No credit check · Your results are based only on
+            what you enter here
+          </p>
+        </div>
+
+        <div class="signals">
+          <div>
+            <span class="k mono">01</span
+            ><span class="v">How much you can afford to borrow</span>
+          </div>
+          <div>
+            <span class="k mono">02</span
+            ><span class="v">What monthly payment fits your budget</span>
+          </div>
+          <div>
+            <span class="k mono">03</span
+            ><span class="v">What interest rate is reasonable for you</span>
+          </div>
+          <div>
+            <span class="k mono">04</span
+            ><span class="v">How long you should take to repay</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="photo-block">
+      <div class="wrap">
+        <div class="photo-card">
+          <img
+            src="assets/advisor-consultation.png"
+            alt="A loan officer talks through borrowing options with a couple, using a laptop to show the numbers."
+          />
+        </div>
+      </div>
+    </div>
+
+    <main>
+      <section id="form-section">
+        <div class="wrap">
+          <!-- Dynamic Floating Accuracy Meter -->
+          <div class="accuracy-dock" id="accuracyDock">
+            <div class="acc-header">
+              <div class="acc-title">🎯 How reliable your estimate is: <span class="mono" id="accScore" style="font-weight:700; font-size:1.05rem;">0%</span></div>
+              <div class="acc-badge" id="accBadge" style="background:var(--warn-soft); color:var(--warn);">⚡ Incomplete</div>
+            </div>
+            <div class="acc-bar-bg">
+              <div class="acc-bar-fill" id="accFill" style="width: 0%;"></div>
+            </div>
+            <div class="acc-desc" id="accDesc">Answer the basic questions in Steps 1 to 3 below to unlock your baseline 60% estimate.</div>
+          </div>
+
+          <div class="card">
+            <form id="loanForm">
+              <div class="step">
+                <div class="step-head">
+                  <span class="step-num mono">1</span>
+                  <h3>Your loan</h3>
+                </div>
+                <p class="step-sub">
+                  Tell us about the loan you're planning to take.
+                </p>
+                <div class="qgrid" style="margin-top: 1.3rem">
+                  <div class="q">
+                    <label for="purpose">What do you need the loan for?</label>
+                    <select id="purpose" required>
+                      <option value="" selected disabled>Select one</option>
+                      <option>Personal needs</option>
+                      <option>Education</option>
+                      <option>Medical expenses</option>
+                      <option>Home</option>
+                      <option>Vehicle</option>
+                      <option>Business</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div class="q">
+                    <label for="amount">How much do you want to borrow?</label>
+                    <div class="prefix-field">
+                      <span class="prefix">₹</span
+                      ><input
+                        type="number"
+                        id="amount"
+                        min="1000"
+                        step="10000"
+                        placeholder="e.g. 500000"
+                        value=""
+                        required
+                      />
+                    </div>
+                    <span class="hint">The loan amount you need.</span>
+                  </div>
+                  <div class="q">
+                    <label for="tenure"
+                      >How many months will you take to repay?</label
+                    >
+                    <select id="tenure" required>
+                      <option value="" selected disabled>Select tenure</option>
+                      <option value="12">12 months</option>
+                      <option value="24">24 months</option>
+                      <option value="36">36 months</option>
+                      <option value="48">48 months</option>
+                      <option value="60">60 months</option>
+                      <option value="72">72 months</option>
+                      <option value="84">84 months</option>
+                    </select>
+                  </div>
+                  <div class="q">
+                    <label for="incomeSource"
+                      >What is your main source of income?</label
+                    >
+                    <select id="incomeSource" required>
+                      <option value="" selected disabled>Select one</option>
+                      <option value="Salaried job">Salaried job</option>
+                      <option value="Self-employed">Self-employed</option>
+                      <option value="Business">Business</option>
+                      <option value="Freelance / Contract work">Freelance / Contract work</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="q full">
+                    <label for="income"
+                      >What is your monthly take-home income?</label
+                    >
+                    <div class="prefix-field">
+                      <span class="prefix">₹</span
+                      ><input
+                        type="number"
+                        id="income"
+                        min="0"
+                        step="5000"
+                        placeholder="e.g. 75000"
+                        value=""
+                        required
+                      />
+                    </div>
+                    <span class="hint"
+                      >The amount you receive after deductions.</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="step-head">
+                  <span class="step-num mono">2</span>
+                  <h3>Your monthly expenses</h3>
+                </div>
+                <p class="step-sub">
+                  This helps us see how much you have left after your regular
+                  costs.
+                </p>
+                <div class="qgrid" style="margin-top: 1.3rem">
+                  <div class="q">
+                    <label for="existingEmi"
+                      >Other loan payments each month</label
+                    >
+                    <div class="prefix-field">
+                      <span class="prefix">₹</span
+                      ><input
+                        type="number"
+                        id="existingEmi"
+                        min="0"
+                        step="1000"
+                        placeholder="e.g. 0 if none"
+                        value=""
+                        required
+                      />
+                    </div>
+                    <span class="hint"
+                      >Include all your current loan EMIs.</span
+                    >
+                  </div>
+                  <div class="q">
+                    <label for="rent">Rent or housing payment each month</label>
+                    <div class="prefix-field">
+                      <span class="prefix">₹</span
+                      ><input
+                        type="number"
+                        id="rent"
+                        min="0"
+                        step="1000"
+                        placeholder="e.g. 0 if none"
+                        value=""
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="q full">
+                    <label for="essential">Essential expenses each month</label>
+                    <div class="prefix-field">
+                      <span class="prefix">₹</span
+                      ><input
+                        type="number"
+                        id="essential"
+                        min="0"
+                        step="1000"
+                        placeholder="e.g. 20000"
+                        value=""
+                        required
+                      />
+                    </div>
+                    <span class="hint"
+                      >Food, bills, travel and other necessary costs.</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="step-head">
+                  <span class="step-num mono">3</span>
+                  <h3>Your credit and age</h3>
+                </div>
+                <p class="step-sub">
+                  This helps us estimate a realistic interest rate and limit.
+                </p>
+                <div class="qgrid" style="margin-top: 1.3rem">
+                  <div class="q">
+                    <label for="cibil">What is your CIBIL score?</label>
+                    <select id="cibil" required>
+                      <option value="" selected disabled>Select one</option>
+                      <option value="800">800+</option>
+                      <option value="750">750–799</option>
+                      <option value="700">700–749</option>
+                      <option value="600">600–699</option>
+                      <option value="500">Below 600</option>
+                      <option value="unknown">I don't know</option>
+                    </select>
+                  </div>
+                  <div class="q">
+                    <label for="age">How old are you?</label>
+                    <input
+                      type="number"
+                      id="age"
+                      min="18"
+                      max="70"
+                      placeholder="e.g. 30"
+                      value=""
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4: Optional accuracy booster questions -->
+              <details id="step4Details">
+                <summary>📋 Step 4: Got a minute to make your estimate more accurate?</summary>
+                <p style="font-size: 0.88rem; color: var(--fg-muted); margin: 0.8rem 0 1rem;">
+                  Answering these quick questions helps tighten your interest rate band from ±2.35% down to ±0.35%.
+                </p>
+                <div class="qgrid" id="optionalGrid">
+                  <!-- Dynamically populated based on income source -->
+                </div>
+              </details>
+
+              <p class="more-note">
+                Want a more accurate result? You can come back and refine your
+                income, expenses and existing loans any time — a closer estimate
+                just needs closer numbers.
+              </p>
+
+              <div class="cta-row">
+                <button type="submit" class="btn btn-primary" id="calcBtn">
+                  Check my borrowing capacity
+                </button>
+                <span class="cta-sub"
+                  >Takes about two minutes · nothing is saved or sent
+                  anywhere</span
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <div class="photo-block">
+        <div class="wrap">
+          <div class="photo-card">
+            <img
+              src="assets/advisor-tablet.png"
+              alt="A bank relationship manager reviews loan terms on a tablet with a couple across the table."
+            />
+          </div>
+        </div>
+      </div>
+
+      <section id="results-section">
+        <div class="wrap">
+          <div id="preResults" class="section-head" style="text-align: center">
+            <h2>Your results will appear here</h2>
+            <p style="margin: 0 auto">
+              Fill in your details above and select
+              <b>Check my borrowing capacity</b> to see your recommendation,
+              your safe limit, a fair interest rate, and a negotiation guide you
+              can take into the meeting.
+            </p>
+          </div>
+
+          <div id="results">
+            <span class="section-label">Your borrowing results</span>
+            <h2 id="resultsFor" style="margin-bottom: 1.5rem">
+              Results for your loan request
+            </h2>
+
+            <div id="verdictBox" class="verdict borrow">
+              <span class="mark" id="verdictMark">✓</span>
+              <div>
+                <h2 id="verdictTitle">Borrow</h2>
+                <p id="verdictReason">Reason will appear here.</p>
+              </div>
+            </div>
+
+            <div class="result-grid">
+              <div class="result-card">
+                <h3>How much can you borrow?</h3>
+                <div class="figure-row">
+                  <span class="label">A bank may offer up to</span
+                  ><span class="value" id="maxLoan">₹0</span>
+                </div>
+                <div class="figure-row">
+                  <span class="label">You can safely afford</span
+                  ><span class="value big" id="safeLoan">₹0</span>
+                </div>
+                <div class="callout">
+                  Use <b id="safeLoanInline">₹0</b> as your safe limit.
+                  Borrowing the full amount a bank offers can leave too little
+                  room for your regular expenses and emergencies.
+                </div>
+              </div>
+
+              <div class="result-card">
+                <h3>A reasonable interest rate</h3>
+                <div class="figure-row">
+                  <span class="label">Loan type</span
+                  ><span
+                    class="value"
+                    id="loanType"
+                    style="
+                      font-family: &quot;Poppins&quot;, sans-serif;
+                      font-weight: 500;
+                      font-size: 0.92rem;
+                      text-align: right;
+                    "
+                  ></span>
+                </div>
+                <div class="figure-row">
+                  <span class="label">Reasonable rate range</span
+                  ><span class="value" id="rateRange">0%</span>
+                </div>
+                <div class="figure-row">
+                  <span class="label">Estimated yearly cost</span
+                  ><span class="value big" id="apr">0%</span>
+                </div>
+                <div class="callout" id="rateWhy">
+                  Why this range applies to you.
+                </div>
+              </div>
+
+              <div class="result-card">
+                <h3>Monthly payment you can afford</h3>
+                <div class="figure-row">
+                  <span class="label">Safe monthly payment</span
+                  ><span class="value big" id="safeEmi">₹0</span>
+                </div>
+                <div class="figure-row">
+                  <span class="label">Payment for your requested loan</span
+                  ><span class="value" id="reqEmi">₹0</span>
+                </div>
+                <span class="pill-note" id="stressPill">Stress test</span>
+                <div class="callout" id="stressWhy">
+                  What we checked and why.
+                </div>
+              </div>
+
+              <div class="result-card">
+                <h3>See how the loan period changes things</h3>
+                <p
+                  style="
+                    font-size: 0.85rem;
+                    color: var(--fg-muted);
+                    margin-bottom: 0.5rem;
+                  "
+                >
+                  For the amount you asked for, at your estimated rate.
+                </p>
+                <div class="compare-wrap">
+                  <table class="compare" id="compareTable">
+                    <thead>
+                      <tr>
+                        <th>Tenure</th>
+                        <th class="mono">Monthly payment</th>
+                        <th class="mono">Total interest</th>
+                        <th class="mono">Total repaid</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="negotiation">
+              <span class="section-label">Loan negotiation guide</span>
+              <h3>What to ask the lender for</h3>
+              <div class="neg-grid">
+                <div class="neg-block">
+                  <h4>Your targets</h4>
+                  <ul>
+                    <li>Loan type: <b id="negLoanType"></b></li>
+                    <li>Reasonable interest rate: <b id="negRate"></b></li>
+                    <li>Highest yearly cost: <b id="negApr"></b></li>
+                    <li>Maximum monthly payment: <b id="negEmi"></b></li>
+                  </ul>
+                </div>
+                <div class="neg-block">
+                  <h4>Why you can ask for better terms</h4>
+                  <ul id="negReasons"></ul>
+                </div>
+              </div>
+              <div class="neg-block" style="margin-top: 1.3rem">
+                <h4>Before you accept</h4>
+                <ul>
+                  <li>
+                    Ask about every fee added to the loan, including processing
+                    fees above 1% plus tax.
+                  </li>
+                  <li>
+                    Don't accept insurance or other add-ons unless you
+                    understand and want them.
+                  </li>
+                  <li>
+                    Ask whether there's a charge for repaying the loan early.
+                  </li>
+                  <li>
+                    Ask for the total amount you'll repay before you accept the
+                    loan.
+                  </li>
+                </ul>
+              </div>
+              <div class="script-box" id="scriptBox"></div>
+            </div>
+
+            <div class="no-borrow-card" id="noBorrowCard" style="display: none">
+              <h3>Why we're saying don't borrow right now</h3>
+              <p>
+                Your current loan payments and monthly expenses leave very
+                little room for another loan. Taking one on now could make your
+                existing commitments harder to manage.
+              </p>
+              <p style="margin-top: 0.9rem">
+                <b>Your safe borrowing limit: ₹0</b>
+              </p>
+              <p style="margin-top: 1rem; font-weight: 500">What to do first</p>
+              <ol>
+                <li>Clear any overdue payments.</li>
+                <li>Reduce your existing debt where you can.</li>
+                <li>Keep your monthly expenses under control.</li>
+                <li>Build a small emergency fund before you borrow again.</li>
+              </ol>
+            </div>
+
+            <div class="footer-actions">
+              <button type="button" class="btn btn-ghost" id="editBtn">
+                Edit my answers
+              </button>
+              <button type="button" class="btn btn-ghost" id="resetBtn">
+                Start fresh
+              </button>
+            </div>
+          </div>
+
+          <!-- Benchmark Persona Test Section -->
+          <div style="margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+            <span class="section-label">Try sample borrower profiles</span>
+            <div class="persona-grid">
+              <div class="persona-box">
+                <div>
+                  <b>👤 Priya, 29</b>
+                  <div class="meta">Bengaluru · Salaried MNC</div>
+                  <p>₹1.1L/mo salary, ₹14k car loan EMI, CIBIL 780, rents at ₹28k. Wants ₹8L personal loan for a wedding.</p>
+                </div>
+                <button type="button" class="btn btn-ghost" style="width:100%;" id="btnPriya">Load Priya</button>
+              </div>
+              <div class="persona-box">
+                <div>
+                  <b>🏪 Ravi, 42</b>
+                  <div class="meta">Mysuru · Kirana Store</div>
+                  <p>₹85k cash income, owns unencumbered shop premises (₹45L), unscored CIBIL. Wants ₹15L business loan.</p>
+                </div>
+                <button type="button" class="btn btn-ghost" style="width:100%;" id="btnRavi">Load Ravi</button>
+              </div>
+              <div class="persona-box">
+                <div>
+                  <b>🛵 Anita, 35</b>
+                  <div class="meta">Hubballi · Delivery Partner</div>
+                  <p>₹28k/mo, 1 EMI bounce, 3 app loans totaling ₹35k at 36% APR. Wants ₹1.5L for electric scooter.</p>
+                </div>
+                <button type="button" class="btn btn-ghost" style="width:100%;" id="btnAnita">Load Anita</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <div class="foot-row">
+          <div class="brandmark"><span class="dot"></span>Borrower Copilot</div>
+          <span class="mono" style="font-size: 0.8rem; color: var(--fg-faint)"
+            >Loan borrowing guide</span
+          >
+        </div>
+        <p class="fine">
+          This tool gives an estimate based only on what you enter. It doesn't
+          guarantee loan approval, a loan amount or an interest rate from any
+          bank or lender — actual terms vary because each lender applies its own
+          rules and checks.
+        </p>
+        <p class="fine">
+          This is a general educational estimate, not personal financial advice.
+          For a decision specific to your situation, speak with your bank or a
+          licensed financial advisor.
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      (function () {
+        const $ = (id) => document.getElementById(id);
+        const inr = (n) =>
+          "₹" + Math.round(Math.max(n, 0)).toLocaleString("en-IN");
+
+        // ---- Dynamic Sector Optional Questions (All 18 per Track) ----
+        const salariedQuestions = [
+          { id: "opt_employer_tier", label: "What type of company do you work for?", type: "select", options: ["Listed Tier-1 Corporate/MNC", "Government / PSU", "Mid-Market Private Firm", "Early-Stage Startup"], weight: 3.0, why: "Tier-1 / PSU unlocks prime interest rates and raises allowable FOIR up to 55%." },
+          { id: "opt_job_vintage_years", label: "Years at current job", type: "number", placeholder: "e.g. 3.0", step: 0.5, weight: 2.5, why: "Over 3 years at the same firm proves job stability, narrowing rate spreads." },
+          { id: "opt_career_vintage_years", label: "Total years of work experience", type: "number", placeholder: "e.g. 5.0", step: 1.0, weight: 2.0, why: "More than 5 years unlocks 60–72 month repayment terms." },
+          { id: "opt_salary_credit_mode", label: "How is salary paid into your account?", type: "select", options: ["Direct Bank Transfer (NEFT/RTGS)", "Cash / Cheque"], weight: 2.0, why: "Digital bank credits validate 100% of income; cash salary takes a 25% haircut." },
+          { id: "opt_variable_bonus_share_pct", label: "Roughly what % of pay is bonus/variable?", type: "number", placeholder: "e.g. 10", weight: 2.0, why: "If bonuses exceed 20% of pay, monthly safe capacity is discounted by 15%." },
+          { id: "opt_on_notice_or_probation", label: "Currently on probation or serving notice?", type: "select", options: ["No", "Yes"], weight: 2.0, why: "Notice period flags income risk, adding 1.50% spread and capping principal." },
+          { id: "opt_liquid_savings_months", label: "Months of living costs in savings", type: "number", placeholder: "e.g. 6.0", step: 1.0, weight: 2.5, why: "Holding 6+ months of living costs drops emergency reserve from 10% to 5%." },
+          { id: "opt_cc_utilization_pct", label: "Credit card limit utilization (%)", type: "number", placeholder: "e.g. 20", weight: 2.0, why: "Utilizing >50% of card limits adds 0.50% risk spread; <20% lowers rates." },
+          { id: "opt_credit_inquiries_90d", label: "Loan or card inquiries in last 90 days", type: "number", placeholder: "e.g. 0", weight: 1.5, why: "Over 3 recent inquiries signals credit hunger, widening your rate band." },
+          { id: "opt_quoted_bank_rate", label: "Bank quoted interest rate (%, Optional)", type: "number", placeholder: "e.g. 11.5", step: 0.25, weight: 3.0, why: "Benchmarks the bank's actual quote against fair regulatory pricing." },
+          { id: "opt_quoted_processing_fee_pct", label: "Quoted processing fee (%)", type: "number", placeholder: "e.g. 1.0", step: 0.25, weight: 2.0, why: "Factored with 18% GST into APR to show true all-in borrowing cost." },
+          { id: "opt_largest_loan_remaining_mos", label: "Months left on biggest existing loan", type: "number", placeholder: "e.g. 12", weight: 1.5, why: "If loans finish within 12 months, future cash headroom expands." },
+          { id: "opt_has_large_upcoming_outlay", label: "Major planned expenses in next 12 months?", type: "select", options: ["No", "Yes"], weight: 1.5, why: "Planned one-off capital needs require higher cash reserves." },
+          { id: "opt_co_applicant_income", label: "Spouse or co-applicant monthly income (₹)", type: "number", placeholder: "e.g. 0", step: 5000, weight: 2.0, why: "Combines verified family income, raising FOIR and safe EMI limits." },
+          { id: "opt_home_loan_tax_benefit", label: "Home loan monthly tax deductions?", type: "select", options: ["No", "Yes"], weight: 1.5, why: "Credits back ~₹4,000 monthly tax savings into disposable cash surplus." },
+          { id: "opt_epf_balance_above_3l", label: "Provident Fund (EPF) balance above ₹3 Lakhs?", type: "select", options: ["No", "Yes"], weight: 1.5, why: "Serves as emergency distress backstop, lowering stress test penalty." },
+          { id: "opt_has_health_insurance", label: "Comprehensive health insurance?", type: "select", options: ["No", "Yes"], weight: 1.0, why: "Comprehensive medical coverage lowers emergency cash deductions." },
+          { id: "opt_unsecured_loan_count", label: "How many personal loans are you paying off?", type: "number", placeholder: "e.g. 0", weight: 1.5, why: "More than 2 active personal loans adds a 1.0% multi-loan leverage penalty." }
+        ];
+
+        const msmeQuestions = [
+          { id: "opt_itr_profit_annual", label: "Annual net profit on latest ITR (₹)", type: "number", placeholder: "e.g. 450000", step: 25000, weight: 3.0, why: "Sets the hard ceiling for traditional unsecured banking credit." },
+          { id: "opt_itr_filing_years", label: "Continuous years of filed business ITRs", type: "number", placeholder: "e.g. 3", weight: 2.0, why: "Three or more years of filed ITRs cuts rate spreads by 0.75%." },
+          { id: "opt_gross_monthly_cash_intake", label: "Monthly cash and UPI sales intake (₹)", type: "number", placeholder: "e.g. 100000", step: 10000, weight: 2.5, why: "Evaluates real operating cash flow to benchmark safe borrowing capacity." },
+          { id: "opt_has_unencumbered_property", label: "Own a property or shop with no loan on it?", type: "select", options: ["No", "Yes"], weight: 3.5, why: "Critical Product Pivot: switches your loan from 18%+ unsecured to 9.5%–11% LAP." },
+          { id: "opt_property_market_value", label: "Market value of loan-free property (₹)", type: "number", placeholder: "e.g. 4500000", step: 100000, weight: 2.5, why: "Determines maximum LAP sanction capacity using 50%–60% LTV." },
+          { id: "opt_title_deed_clarity", label: "Property title deed clear and registered?", type: "select", options: ["Yes", "No"], weight: 2.0, why: "Clear registered title narrows LAP spread; unclear deed widens spread." },
+          { id: "opt_business_vintage_years", label: "Years operating at current location", type: "number", placeholder: "e.g. 5", weight: 2.0, why: "Five or more years of local shop vintage cuts rate spreads by 0.50%." },
+          { id: "opt_business_premises_ownership", label: "Premises owned or rented?", type: "select", options: ["Owned (No Rent)", "Rented / Commercial Lease"], weight: 1.5, why: "An owned store eliminates rental overhead, permanently protecting margins." },
+          { id: "opt_annual_gstr3b_turnover", label: "Annual business turnover on GST (GSTR-3B, ₹)", type: "number", placeholder: "e.g. 2000000", step: 50000, weight: 2.0, why: "Unlocks GST surrogate credit lines up to 10%–15% of verified turnover." },
+          { id: "opt_seasonal_variance_high", label: "Sales drop >35% during slow seasons?", type: "select", options: ["No (Consistent)", "Yes (Seasonal Drops)"], weight: 1.5, why: "High seasonality anchors safe EMI strictly to the lowest trough month." },
+          { id: "opt_co_applicant_income_msme", label: "Secondary family/spouse monthly income (₹)", type: "number", placeholder: "e.g. 0", step: 2000, weight: 2.0, why: "Adds secondary steady household earnings to cushion merchant cash flow." },
+          { id: "opt_commercial_vehicle_assets", label: "Own commercial delivery vehicles free of debt?", type: "select", options: ["No", "Yes"], weight: 1.5, why: "Provides movable asset backing, reducing equipment finance spreads." },
+          { id: "opt_supplier_payment_terms", label: "Main supplier payment terms", type: "select", options: ["15–30 Days Credit", "Immediate Cash Only", "60+ Days Credit"], weight: 1.5, why: "Immediate cash-only suppliers require higher cash cushions." },
+          { id: "opt_customer_receivables_days", label: "Average customer credit collection days", type: "number", placeholder: "e.g. 30", step: 5, weight: 1.5, why: "Over 45 days of uncollected customer credit applies a 10% cash haircut." },
+          { id: "opt_average_bank_balance", label: "Average daily bank balance (ABB, ₹)", type: "number", placeholder: "e.g. 50000", step: 5000, weight: 2.0, why: "Maintaining a healthy daily credit balance in current accounts cuts spreads." },
+          { id: "opt_unsecured_mca_portion_pct", label: "Share of debt in daily/app merchant loans (%)", type: "number", placeholder: "e.g. 0", weight: 1.5, why: "High short-term merchant advance debt flags severe cash stretch." },
+          { id: "opt_expansion_margin_boost", label: "Extra monthly profit this loan generates (₹)", type: "number", placeholder: "e.g. 15000", step: 2000, weight: 1.5, why: "Incremental profits from new stock are credited to future safe capacity." },
+          { id: "opt_statutory_gst_disputes", label: "Any pending tax notices or GST legal disputes?", type: "select", options: ["No", "Yes"], weight: 1.0, why: "Active tax disputes widen loan spreads by 1.50% and bar prime lenders." }
+        ];
+
+        const gigQuestions = [
+          { id: "opt_payment_bounces_6m", label: "Missed/bounced loan payments in last 6 months", type: "number", placeholder: "e.g. 0", weight: 3.5, why: "Mandatory Kill-Switch: Any active bounce in 6 months triggers Don't Borrow." },
+          { id: "opt_active_app_loan_count", label: "Active instant digital loan apps count", type: "number", placeholder: "e.g. 0", weight: 2.5, why: "Identifies digital leverage and activates debt consolidation rules." },
+          { id: "opt_app_loan_balance_total", label: "Total balance left on loan apps (₹)", type: "number", placeholder: "e.g. 0", step: 5000, weight: 2.5, why: "Quantifies the predatory debt that must be cleared before new credit." },
+          { id: "opt_app_loan_apr", label: "Highest annual interest on loan apps (% APR)", type: "number", placeholder: "e.g. 0", step: 1.0, weight: 2.5, why: "Interest above 24% triggers predatory debt policy, blocking new debt." },
+          { id: "opt_productive_income_boost", label: "Extra monthly income this tool/vehicle brings (₹)", type: "number", placeholder: "e.g. 3500", step: 500, weight: 3.0, why: "Incremental earnings are credited toward future safe loan repayment." },
+          { id: "opt_payout_mode", label: "How do you receive work payouts?", type: "select", options: ["Digital App / Bank Transfer", "Unrecorded Cash In Hand"], weight: 2.5, why: "Digital platform records unlock priority sector commercial EV rates." },
+          { id: "opt_platform_active_days_monthly", label: "Active delivery / work days per month", type: "number", placeholder: "e.g. 24", weight: 2.0, why: "24 or more days validates full-time earnings; under 15 days adds haircut." },
+          { id: "opt_household_adult_earners", label: "Adult earning members in household", type: "number", placeholder: "e.g. 1", weight: 1.5, why: "Quantifies income redundancy: single-earner households face higher risk." },
+          { id: "opt_spouse_employment_status", label: "Spouse's employment status", type: "select", options: ["Employed / Earning", "Homemaker / Not Seeking Work", "Long-Term Unemployed (6+ mos)"], weight: 2.0, why: "A long-term unemployed spouse increases the stress test income drop to 30%." },
+          { id: "opt_dependent_children_count", label: "Number of dependent children", type: "number", placeholder: "e.g. 0", weight: 1.5, why: "Each dependent child adds ₹3,000 to the non-negotiable living floor." },
+          { id: "opt_secondary_trade_income", label: "Side trade income (tailoring, repairs, etc.)?", type: "select", options: ["No", "Yes (Active Side Income)"], weight: 1.5, why: "Diversified household earnings cushion downtime from vehicle repairs." },
+          { id: "opt_liquid_emergency_cash_gold", label: "Emergency cash or gold savings held (₹)", type: "number", placeholder: "e.g. 0", step: 1000, weight: 2.0, why: "Zero emergency cash triggers warning: any lost workday causes default." },
+          { id: "opt_is_ev_vehicle", label: "Financing an Electric Vehicle (EV) that cuts fuel costs?", type: "select", options: ["No", "Yes (Replaces Petrol Scooter)"], weight: 2.0, why: "EV adoption saves ~₹3,500/month in petrol costs, credited to installment." },
+          { id: "opt_informal_moneylender_debt", label: "Owe money to local daily/weekly moneylenders?", type: "select", options: ["No", "Yes"], weight: 1.5, why: "Informal debt represents extreme distress and drops allowable FOIR to 25%." },
+          { id: "opt_has_commercial_driving_badge", label: "Commercial driving badge or commercial license?", type: "select", options: ["No", "Yes"], weight: 1.5, why: "Commercial badge unlocks asset financing and clean commercial subsidies." },
+          { id: "opt_phone_emi_active", label: "Currently paying smartphone installment?", type: "select", options: ["No", "Yes"], weight: 1.0, why: "Smartphone installments prioritized: default halts mobile gig app access." },
+          { id: "opt_medical_emergency_12m", label: "Major unpaid hospital bill in past year?", type: "select", options: ["No", "Yes"], weight: 1.0, why: "Past uninsured medical expenses widen uncertainty spread on safe capacity." },
+          { id: "opt_shg_jlg_member", label: "Member of a Self-Help Group (SHG / JLG)?", type: "select", options: ["No", "Yes"], weight: 1.0, why: "SHG membership unlocks low-cost microfinance capped at RBI rates." }
+        ];
+
+        const optionalQuestions = {
+          "Salaried job": salariedQuestions,
+          "Self-employed": msmeQuestions,
+          "Business": msmeQuestions,
+          "Freelance / Contract work": gigQuestions,
+          "Other": gigQuestions
+        };
+
+        function updateOptionalQuestions() {
+          const src = $("incomeSource").value;
+          const grid = $("optionalGrid");
+          grid.innerHTML = "";
+          if (!src) {
+            grid.innerHTML = '<div class="q full" style="color:var(--fg-muted); font-size:0.9rem;">Select your main source of income in Step 1 to see tailored questions here.</div>';
+            updateAccuracyMeter();
+            return;
+          }
+          const qs = optionalQuestions[src] || [];
+          qs.forEach(q => {
+            const div = document.createElement("div");
+            div.className = "q";
+            const whyTooltip = q.why ? ` title="${q.why}"` : '';
+            if (q.type === "select") {
+              div.innerHTML = `<label for="${q.id}"${whyTooltip}>${q.label}</label><select id="${q.id}"><option value="" selected disabled>Select one</option>${q.options.map(o => `<option value="${o}">${o}</option>`).join('')}</select>`;
+            } else {
+              div.innerHTML = `<label for="${q.id}"${whyTooltip}>${q.label}</label><input type="number" id="${q.id}" step="${q.step || 1}" placeholder="${q.placeholder || 'e.g. 0'}" value="" />`;
+            }
+            grid.appendChild(div);
+          });
+          grid.querySelectorAll("input, select").forEach(el => {
+            el.addEventListener("input", updateAccuracyMeter);
+            el.addEventListener("change", updateAccuracyMeter);
+          });
+          updateAccuracyMeter();
+        }
+
+        // Live Accuracy Meter calculation
+        function updateAccuracyMeter() {
+          let score = 0;
+          const requiredIds = ["purpose", "amount", "tenure", "incomeSource", "income", "existingEmi", "rent", "essential", "cibil", "age"];
+          let answeredReq = requiredIds.filter(id => $(id) && $(id).value !== "").length;
+          
+          score = (answeredReq / requiredIds.length) * 60;
+
+          // If all 10 required questions answered, add proportional weights for answered optional questions
+          if (answeredReq === requiredIds.length) {
+            const src = $("incomeSource") ? $("incomeSource").value : "";
+            const qs = optionalQuestions[src] || [];
+            let optWeight = 0;
+            qs.forEach(q => {
+              const el = $(q.id);
+              if (el && el.value !== "" && el.value !== "Select one") {
+                optWeight += (q.weight || 1.5);
+              }
+            });
+            score = Math.min(95.0, 60.0 + optWeight);
+          }
+
+          score = Math.round(score * 10) / 10;
+          const dispScore = score % 1 === 0 ? score.toFixed(0) : score.toFixed(1);
+          $("accScore").textContent = dispScore + "%";
+          $("accFill").style.width = score + "%";
+
+          const badge = $("accBadge");
+          const desc = $("accDesc");
+          if (score < 60) {
+            badge.style.background = "var(--warn-soft)";
+            badge.style.color = "var(--warn)";
+            badge.textContent = `⚡ ${answeredReq}/10 answered`;
+            desc.textContent = "Answer the basic questions in Steps 1 to 3 below to unlock your baseline 60% estimate.";
+          } else if (score < 75) {
+            const spreadWidth = (2.0 * (1.0 - (score - 60.0)/35.0) + 0.35).toFixed(2);
+            badge.style.background = "var(--brand-soft)";
+            badge.style.color = "var(--brand)";
+            badge.textContent = `±${spreadWidth}% spread`;
+            desc.textContent = `Solid baseline (${dispScore}% accuracy, ±${spreadWidth}% spread). Answer the quick optional questions in Step 4 to tighten your rate range.`;
+          } else {
+            const spreadWidth = (2.0 * (1.0 - (score - 60.0)/35.0) + 0.35).toFixed(2);
+            badge.style.background = "var(--good-soft)";
+            badge.style.color = "var(--good)";
+            badge.textContent = `🎯 ±${spreadWidth}% Calibrated`;
+            desc.textContent = `High accuracy (${dispScore}%)! Your safe limit and interest rate are tightly calibrated to your personal numbers.`;
+          }
+        }
+
+        $("incomeSource").addEventListener("change", updateOptionalQuestions);
+        document.querySelectorAll("#loanForm input, #loanForm select").forEach(el => {
+          el.addEventListener("input", updateAccuracyMeter);
+          el.addEventListener("change", updateAccuracyMeter);
+        });
+
+        // ---- Calculation Engine ----
+        function rateBand(cibil, incomeSource, isLap, isEv) {
+          if (isLap) return [9.75, 10.50];
+          if (isEv) return [11.50, 13.00];
+
+          let band;
+          if (cibil >= 800) band = [10.25, 10.75];
+          else if (cibil >= 750) band = [10.5, 11.25];
+          else if (cibil >= 700) band = [11.25, 12.5];
+          else if (cibil >= 600) band = [13.0, 16.0];
+          else if (cibil === "unknown") band = [12.0, 15.0];
+          else band = [18.0, 24.0];
+
+          if (["Self-employed", "Business", "Freelance / Contract work"].includes(incomeSource) && !isLap && !isEv) {
+            band = [band[0] + 0.5, band[1] + 0.75];
+          }
+          return band;
+        }
+
+        function emiFor(P, annualRatePct, n) {
+          const r = annualRatePct / 12 / 100;
+          if (r === 0) return P / n;
+          return (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+        }
+
+        function principalFor(EMI, annualRatePct, n) {
+          const r = annualRatePct / 12 / 100;
+          if (r === 0) return EMI * n;
+          return (EMI * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n));
+        }
+
+        function foirCap(cibil, incomeSource) {
+          if (incomeSource === "Salaried job") {
+            if (cibil >= 750) return 0.55;
+            return 0.50;
+          }
+          if (incomeSource === "Self-employed" || incomeSource === "Business") return 0.45;
+          return 0.40;
+        }
+
+        function calculate(v) {
+          const cibilVal = v.cibil === "unknown" ? "unknown" : Number(v.cibil);
+          
+          // Read any answered sector variables from DOM
+          const hasProp = ($("opt_has_unencumbered_property") && $("opt_has_unencumbered_property").value === "Yes") || v.hasUnencumberedProperty;
+          const isEv = ($("opt_is_ev_vehicle") && $("opt_is_ev_vehicle").value && $("opt_is_ev_vehicle").value.includes("Yes")) || v.isEv;
+          const bounces = Number($("opt_payment_bounces_6m") ? $("opt_payment_bounces_6m").value : 0) || v.bounces || 0;
+          const appDebt = Number($("opt_app_loan_balance_total") ? $("opt_app_loan_balance_total").value : 0) || v.appDebt || 0;
+          const appApr = Number($("opt_app_loan_apr") ? $("opt_app_loan_apr").value : 0) || 0;
+          const secIncome = Number($("opt_co_applicant_income") ? $("opt_co_applicant_income").value : ($("opt_co_applicant_income_msme") ? $("opt_co_applicant_income_msme").value : 0)) || v.secIncome || 0;
+          const propVal = Number($("opt_property_market_value") ? $("opt_property_market_value").value : 0) || v.propVal || 0;
+          const savingsRunway = Number($("opt_liquid_savings_months") ? $("opt_liquid_savings_months").value : 0) || 0;
+          const productiveBoost = Number($("opt_productive_income_boost") ? $("opt_productive_income_boost").value : ($("opt_expansion_margin_boost") ? $("opt_expansion_margin_boost").value : 0)) || 0;
+          const sideTrade = ($("opt_secondary_trade_income") && $("opt_secondary_trade_income").value.includes("Yes")) ? 2000 : 0;
+          const homeLoanTax = ($("opt_home_loan_tax_benefit") && $("opt_home_loan_tax_benefit").value === "Yes") ? 4000 : 0;
+
+          const isLap = hasProp && (v.incomeSource === "Self-employed" || v.incomeSource === "Business");
+          const band = rateBand(cibilVal, v.incomeSource, isLap, isEv);
+          const avgRate = (band[0] + band[1]) / 2;
+          const feePct = Number($("opt_quoted_processing_fee_pct") ? $("opt_quoted_processing_fee_pct").value : 1.0) || 1.0;
+          const apr = avgRate + feePct * (12 / v.tenure) * 0.6;
+
+          const totalIncome = v.income + secIncome;
+          const cap = foirCap(cibilVal, v.incomeSource);
+          let maxEmiBank = Math.max(totalIncome * cap - v.existingEmi, 0);
+          
+          const bufferPct = savingsRunway >= 6.0 ? 0.05 : 0.10;
+          const emergencyBuffer = totalIncome * bufferPct;
+          const extraCash = productiveBoost + sideTrade + homeLoanTax;
+          const disposable = totalIncome - v.existingEmi - v.rent - v.essential - emergencyBuffer + extraCash;
+          const safeEmi = Math.max(disposable, 0);
+
+          let maxLoan = principalFor(maxEmiBank, avgRate, v.tenure);
+          if (isLap && propVal > 0) {
+            maxLoan = Math.min(maxLoan, propVal * 0.55);
+            maxEmiBank = emiFor(maxLoan, avgRate, v.tenure);
+          }
+          const safeLoan = principalFor(safeEmi, avgRate, v.tenure);
+          const reqEmi = emiFor(v.amount, avgRate, v.tenure);
+
+          // Stress test
+          const stressIncome = totalIncome * 0.8;
+          const stressEmiAtHigherRate = emiFor(v.amount, avgRate + 2, v.tenure);
+          const totalStressDebt = v.existingEmi + stressEmiAtHigherRate;
+          const passesStress = (totalStressDebt / stressIncome) <= 0.65;
+
+          // Product name
+          let loanType = "Personal Loan";
+          if (isLap) loanType = "Loan Against Property (LAP)";
+          else if (isEv) loanType = "Commercial EV Loan";
+          else if (v.incomeSource === "Salaried job") loanType = "Personal Loan for Salaried Employees";
+          else if (v.incomeSource === "Self-employed" || v.incomeSource === "Business") loanType = "Business Installment Loan";
+
+          // Verdict
+          let verdict, reason;
+          if (bounces >= 1 || appDebt >= 25000 || appApr >= 24 || safeEmi <= 0) {
+            verdict = "no";
+            if (bounces >= 1 && appDebt >= 25000) {
+              reason = "An auto-debit payment bounce in the last 6 months and active high-cost app debt flag serious risk. Taking on new debt before clearing these creates severe distress.";
+            } else if (bounces >= 1) {
+              reason = "A missed loan payment in the last 6 months means new borrowing is too risky right now. Clearing overdue payments first is much safer.";
+            } else if (appDebt >= 25000 || appApr >= 24) {
+              reason = "High-interest digital loan app debt detected. Taking another loan before consolidating or clearing these high-cost loans increases distress.";
+            } else {
+              reason = "Your current loan payments and essential expenses leave very little of your income free. Taking on another loan now could make your existing commitments harder to manage.";
+            }
+          } else if (reqEmi <= safeEmi) {
+            verdict = "borrow";
+            if (isLap) {
+              reason = `Using your debt-free property unlocks a much lower interest rate, and your monthly payment of ${inr(reqEmi)} fits comfortably within your safe monthly budget.`;
+            } else {
+              reason = `Your requested monthly payment of ${inr(reqEmi)} is within your affordable monthly limit of ${inr(safeEmi)}. You should still have room for your regular expenses and emergencies.`;
+            }
+          } else if (reqEmi <= maxEmiBank) {
+            verdict = "less";
+            reason = `A bank may approve this loan, but the monthly payment of ${inr(reqEmi)} is above the ${inr(safeEmi)} that comfortably fits your budget. Consider borrowing closer to ${inr(safeLoan)}, or repaying over a longer period.`;
+          } else {
+            verdict = "less";
+            reason = `The amount you asked for needs a monthly payment of ${inr(reqEmi)}, which is more than a lender is likely to approve for you. ${inr(safeLoan)} is a more realistic amount to apply for.`;
+          }
+
+          return {
+            band, avgRate, apr, maxEmiBank, safeEmi,
+            maxLoan: verdict === "no" ? 0 : maxLoan,
+            safeLoan: verdict === "no" ? 0 : safeLoan,
+            reqEmi, disposable, passesStress, verdict, reason,
+            loanType, cibilVal, isLap
+          };
+        }
+
+        function reasonsForBetterTerms(v, r) {
+          const list = [];
+          if (r.isLap) {
+            list.push("100% unencumbered property provides absolute security, removing unsecured risk premiums.");
+          }
+          if (r.cibilVal !== "unknown" && r.cibilVal >= 750)
+            list.push(`Your CIBIL score of ${r.cibilVal}+ puts you in a prime tier, which qualifies you for lower interest rates.`);
+          else if (r.cibilVal === "unknown")
+            list.push("Demonstrating stable verified cash flow helps negotiate down the initial quote.");
+          if (v.incomeSource === "Salaried job")
+            list.push("Regular salary credits via bank transfer prove consistent repayment ability.");
+          if (v.existingEmi === 0)
+            list.push("You have zero other loan EMIs running, which gives you maximum repayment safety.");
+          if (r.disposable > v.income * 0.35)
+            list.push("You have a healthy monthly cash surplus left over after regular expenses.");
+          if (list.length === 0)
+            list.push("Compare offers from at least 2 or 3 lenders — even 0.5% rate difference saves thousands.");
+          return list;
+        }
+
+        function renderCompare(v, r) {
+          const tenures = [24, 36, 48, 60].filter(t => t !== Number(v.tenure));
+          tenures.unshift(Number(v.tenure));
+          const tbody = document.querySelector("#compareTable tbody");
+          tbody.innerHTML = "";
+          tenures.slice(0, 4).sort((a, b) => a - b).forEach(t => {
+            const emi = emiFor(v.amount, r.avgRate, t);
+            const total = emi * t;
+            const interest = total - v.amount;
+            const tr = document.createElement("tr");
+            if (t === Number(v.tenure)) tr.className = "current";
+            tr.innerHTML = `<td>${t} months${t === Number(v.tenure) ? " (yours)" : ""}</td><td class="mono">${inr(emi)}</td><td class="mono">${inr(interest)}</td><td class="mono">${inr(total)}</td>`;
+            tbody.appendChild(tr);
+          });
+        }
+
+        function renderResults(v, r) {
+          $("preResults").style.display = "none";
+          $("results").classList.add("show");
+          $("topStatus").innerHTML = "Status: <b>Complete</b>";
+          $("resultsFor").textContent = `Results for a ${inr(v.amount)} loan over ${v.tenure} months`;
+
+          const vb = $("verdictBox");
+          vb.className = "verdict " + r.verdict;
+          $("verdictMark").textContent = r.verdict === "borrow" ? "✓" : r.verdict === "no" ? "✕" : "△";
+          $("verdictTitle").textContent = r.verdict === "borrow" ? "Borrow" : r.verdict === "no" ? "Don't borrow" : "Borrow less";
+          $("verdictReason").textContent = r.reason;
+
+          $("maxLoan").textContent = inr(r.maxLoan);
+          $("safeLoan").textContent = inr(r.safeLoan);
+          $("safeLoanInline").textContent = inr(r.safeLoan);
+
+          $("loanType").textContent = r.loanType;
+          $("rateRange").textContent = `${r.band[0].toFixed(2)}% – ${r.band[1].toFixed(2)}%`;
+          $("apr").textContent = r.apr.toFixed(2) + "%";
+          $("rateWhy").innerHTML = `<b>Why:</b> This range reflects your credit standing and loan type. The estimated yearly cost includes processing fees and 18% GST.`;
+
+          $("safeEmi").textContent = inr(r.safeEmi);
+          $("reqEmi").textContent = inr(r.reqEmi) + " / month";
+          const pill = $("stressPill");
+          if (r.passesStress) {
+            pill.className = "pill-note ok";
+            pill.textContent = "✓ Still affordable if your income falls 20% and rates rise 2%";
+          } else {
+            pill.className = "pill-note bad";
+            pill.textContent = "✕ Would be tight if your income falls 20% or rates rise 2%";
+          }
+          $("stressWhy").innerHTML = `<b>What we checked:</b> whether you could comfortably keep paying if your income dropped by a fifth and the interest rate rose by 2 percentage points.`;
+
+          renderCompare(v, r);
+
+          $("negLoanType").textContent = r.loanType;
+          $("negRate").textContent = `${r.band[0].toFixed(2)}% – ${r.band[1].toFixed(2)}%`;
+          $("negApr").textContent = r.apr.toFixed(2) + "%";
+          $("negEmi").textContent = inr(r.safeEmi);
+          const reasonsList = $("negReasons");
+          reasonsList.innerHTML = "";
+          reasonsForBetterTerms(v, r).forEach(txt => {
+            const li = document.createElement("li");
+            li.textContent = txt;
+            reasonsList.appendChild(li);
+          });
+          $("scriptBox").textContent = `"I'm applying for a ${r.loanType} based on my verified numbers. I'd like an interest rate between ${r.band[0].toFixed(2)}% and ${r.band[1].toFixed(2)}%. I can afford a maximum monthly payment of ${inr(r.safeEmi)}. Please confirm all processing charges and remove any mandatory insurance add-ons before I accept the loan."`;
+
+          $("noBorrowCard").style.display = (r.verdict === "no") ? "block" : "none";
+
+          const target = document.getElementById("results-section") || document.getElementById("verdictBox");
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+            [30, 80, 180, 350].forEach(delay => {
+              setTimeout(() => {
+                const targetY = target.getBoundingClientRect().top + window.pageYOffset - 95;
+                window.scrollTo({ top: Math.max(0, targetY), behavior: "smooth" });
+              }, delay);
+            });
+          }
+        }
+
+        function readForm() {
+          return {
+            purpose: $("purpose").value,
+            amount: Number($("amount").value),
+            tenure: Number($("tenure").value),
+            incomeSource: $("incomeSource").value,
+            income: Number($("income").value),
+            existingEmi: Number($("existingEmi").value || 0),
+            rent: Number($("rent").value || 0),
+            essential: Number($("essential").value),
+            cibil: $("cibil").value,
+            age: Number($("age").value),
+          };
+        }
+
+        $("loanForm").addEventListener("submit", function (e) {
+          e.preventDefault();
+          const v = readForm();
+          const r = calculate(v);
+          renderResults(v, r);
+        });
+
+        $("editBtn").addEventListener("click", function () {
+          $("results").classList.remove("show");
+          $("preResults").style.display = "block";
+          document.getElementById("form-section").scrollIntoView({ behavior: "smooth" });
+        });
+
+        $("resetBtn").addEventListener("click", function () {
+          $("loanForm").reset();
+          $("results").classList.remove("show");
+          $("preResults").style.display = "block";
+          $("topStatus").innerHTML = "Status: <b>Not started</b>";
+          updateOptionalQuestions();
+          updateAccuracyMeter();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        // Benchmark Personas
+        $("btnPriya").addEventListener("click", function () {
+          $("purpose").value = "Personal needs";
+          $("amount").value = 800000;
+          $("tenure").value = "48";
+          $("incomeSource").value = "Salaried job";
+          $("income").value = 110000;
+          $("existingEmi").value = 14000;
+          $("rent").value = 28000;
+          $("essential").value = 25000;
+          $("cibil").value = "750";
+          $("age").value = 29;
+          updateOptionalQuestions();
+          $("loanForm").requestSubmit();
+        });
+
+        $("btnRavi").addEventListener("click", function () {
+          $("purpose").value = "Business";
+          $("amount").value = 1500000;
+          $("tenure").value = "84";
+          $("incomeSource").value = "Self-employed";
+          $("income").value = 85000;
+          $("existingEmi").value = 0;
+          $("rent").value = 0;
+          $("essential").value = 28000;
+          $("cibil").value = "unknown";
+          $("age").value = 42;
+          updateOptionalQuestions();
+          if ($("opt_has_unencumbered_property")) $("opt_has_unencumbered_property").value = "Yes";
+          if ($("opt_property_market_value")) $("opt_property_market_value").value = 4500000;
+          if ($("opt_co_applicant_income_msme")) $("opt_co_applicant_income_msme").value = 18000;
+          $("loanForm").requestSubmit();
+        });
+
+        $("btnAnita").addEventListener("click", function () {
+          $("purpose").value = "Vehicle";
+          $("amount").value = 150000;
+          $("tenure").value = "24";
+          $("incomeSource").value = "Freelance / Contract work";
+          $("income").value = 28000;
+          $("existingEmi").value = 1500;
+          $("rent").value = 5000;
+          $("essential").value = 18000;
+          $("cibil").value = "500";
+          $("age").value = 35;
+          updateOptionalQuestions();
+          if ($("opt_payment_bounces_6m")) $("opt_payment_bounces_6m").value = 1;
+          if ($("opt_app_loan_balance_total")) $("opt_app_loan_balance_total").value = 35000;
+          if ($("opt_is_ev_vehicle")) $("opt_is_ev_vehicle").value = "Yes";
+          $("loanForm").requestSubmit();
+        });
+
+        // Initialize on load
+        updateOptionalQuestions();
+      })();
+    </script>
+  </body>
+</html>

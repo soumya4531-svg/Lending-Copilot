@@ -24,52 +24,50 @@ def explain_verdict(profile: Dict[str, Any], calculated: Dict[str, Any]) -> str:
     if verdict == "DON'T BORROW":
         if bounces >= 1 and app_loan_count >= 1:
             return (
-                f"Why: An auto-debit bounce in the last 6 months and active high-cost app debt ({app_loan_apr:.0f}% APR) "
-                f"flag acute distress; adding new debt before clearing arrears creates severe insolvency risk."
+                f"Why: An auto-debit payment bounce in the last 6 months and active high-cost app loans ({app_loan_apr:.0f}% APR) "
+                f"flag serious financial stress. Taking on new debt before clearing these could make managing your finances very difficult."
             )
         if bounces >= 1:
             return (
-                f"Why: An auto-debit payment bounce in the last 6 months triggered our distress safety rule; "
-                f"adding new debt before clearing arrears creates extreme default risk."
+                f"Why: An auto-debit payment bounce in the last 6 months means new borrowing is too risky right now. "
+                f"Clearing overdue payments first is much safer than adding another loan."
             )
         if app_loan_count >= 1 and app_loan_apr >= 24.0:
             return (
-                f"Why: You carry active digital app loans above 24% APR; taking new loans before consolidating "
-                f"these leads to a compounding high-cost debt trap."
+                f"Why: You have active app loans at {app_loan_apr:.0f}% APR. Taking on another loan before paying these off "
+                f"creates a compounding debt trap."
             )
         if safe_emi_cap <= 0:
             return (
-                f"Why: Essential living costs of ₹{float(profile.get('living_expenses', 0)):,g} and existing debt of "
-                f"₹{float(profile.get('existing_emi', 0)):,g} already consume 100% of your take-home pay, leaving no safety margin."
+                f"Why: Your regular expenses and current loan payments leave very little of your income free. "
+                f"Taking on another loan now could make your existing commitments harder to manage."
             )
-        return "Why: Critical cash-flow distress signals were detected; new borrowing is blocked to prevent insolvency."
+        return "Why: Your current expenses and loan payments leave very little room for another loan right now."
 
     elif verdict == "BORROW LESS":
         if requested_emi > safe_emi_cap:
-            gap = requested_emi - safe_emi_cap
             return (
-                f"Why: Your requested loan requires an EMI of ₹{requested_emi:,.0f}, which overshoots your safe monthly "
-                f"ceiling of ₹{safe_emi_cap:,.0f} by ₹{gap:,.0f}."
+                f"Why: A bank may approve this loan, but the monthly payment of ₹{requested_emi:,.0f} is higher than the "
+                f"₹{safe_emi_cap:,.0f} that comfortably fits your budget. Consider borrowing closer to ₹{safe_limit:,.0f}, or repaying over a longer period."
             )
         if requested_principal > safe_limit:
-            principal_gap = requested_principal - safe_limit
             return (
-                f"Why: Your requested loan of ₹{requested_principal:,.0f} exceeds your safe borrowing limit of "
-                f"₹{safe_limit:,.0f} by ₹{principal_gap:,.0f}."
+                f"Why: The amount you asked for (₹{requested_principal:,.0f}) is higher than your safe borrowing limit of "
+                f"₹{safe_limit:,.0f}. Applying for ₹{safe_limit:,.0f} is much safer for your monthly budget."
             )
         return (
-            f"Why: Servicing your requested loan under our simulated 20% income shock breaches the safe 65% debt-to-income threshold."
+            f"Why: If your income dropped or interest rates rose, this loan payment would take up too much of your monthly budget."
         )
 
     else:  # BORROW
         if profile.get("has_unencumbered_property") or calculated.get("is_lap"):
             return (
-                f"Why: Pledging unencumbered commercial property unlocks prime LAP capacity, and your ₹{requested_emi:,.0f} "
-                f"monthly EMI fits comfortably within your safe cash flow."
+                f"Why: Using your debt-free property unlocks a much lower interest rate, and your monthly payment of "
+                f"₹{requested_emi:,.0f} fits comfortably within your safe monthly budget."
             )
         return (
-            f"Why: Your requested monthly EMI of ₹{requested_emi:,.0f} fits comfortably within your ₹{safe_emi_cap:,.0f} "
-            f"safe monthly limit while keeping your emergency living buffer intact."
+            f"Why: Your requested monthly payment of ₹{requested_emi:,.0f} is within your affordable monthly limit of "
+            f"₹{safe_emi_cap:,.0f}. You should still have room for your regular expenses and emergencies."
         )
 
 
@@ -85,43 +83,31 @@ def explain_borrowing_limits(profile: Dict[str, Any], calculated: Dict[str, Any]
     is_lap = bool(calculated.get("is_lap", False))
 
     if calculated.get("verdict") == "DON'T BORROW":
-        driver = calculated.get("verdict_driver", "")
-        bounces = int(profile.get("payment_bounces_6m", 0))
-        app_loan_count = int(profile.get("active_app_loan_count", 0))
-        
-        if driver == "zero_surplus_deficit" or (bounces == 0 and app_loan_count == 0):
-            why = (
-                f"Why: Essential living expenses (₹{living:,.0f}) and existing obligations leave zero residual "
-                f"cash flow surplus after reserving a basic 10% emergency buffer, leaving no headroom to service any new EMI."
-            )
-            recommendation = "Do Not Borrow — Increase monthly cash flow surplus or reduce expenses before taking new debt."
-        else:
-            why = (
-                "Why: Active payment bounces and digital loan arrears block institutional lending eligibility "
-                "until existing debts are consolidated."
-            )
-            recommendation = "Do Not Borrow — Prioritize debt restructuring and app loan consolidation."
+        why = (
+            f"Why: Your current loan payments and monthly expenses leave very little room for another loan. "
+            f"Taking one on now could make your existing commitments harder to manage."
+        )
+        recommendation = "Do not borrow — clear overdue payments and reduce existing debt before borrowing."
     elif is_lap:
         why = (
-            f"Why: Pledging your unencumbered property pivots you to secured LAP, unlocking up to ₹{lender:,.0f} "
-            f"while avoiding predatory 18%+ unsecured business installment loans."
+            f"Why: Pledging your unencumbered property unlocks secured Loan Against Property (LAP) up to ₹{lender:,.0f} "
+            f"at a lower interest rate, avoiding high-interest unsecured loans."
         )
-        recommendation = f"Use Your Safe Limit (₹{safe:,.0f}): Anchors your borrowing to real cash flow."
+        recommendation = f"Use your safe limit (₹{safe:,.0f}): This keeps your monthly payments comfortable and aligned with your real cash flow."
     elif safe < lender:
         why = (
-            f"Why: Banks will approve up to ₹{lender:,.0f} based purely on gross salary, but your rent of ₹{rent:,.0f} "
-            f"and essential living costs limit your safe debt capacity to ₹{safe:,.0f}."
+            f"Why: A bank looks only at your gross income and may offer up to ₹{lender:,.0f}, but your rent (₹{rent:,.0f}) "
+            f"and essential expenses limit what you can safely afford to ₹{safe:,.0f}."
         )
         recommendation = (
-            f"Use Your Safe Limit (₹{safe:,.0f}): Do NOT take the lender's full sanction of ₹{lender:,.0f}. "
-            f"The bank formula ignores your rent and living expenses; taking the bank's maximum will wipe out your cash buffer."
+            f"Use your safe limit (₹{safe:,.0f}): Borrowing the full amount a bank offers can leave too little room "
+            f"for your regular expenses and emergencies."
         )
     else:
         why = (
-            f"Why: Minimal fixed living expenses and low ongoing debt allow your safe borrowing capacity to match "
-            f"the maximum standard banking sanction limit."
+            f"Why: Your regular expenses and current debt leave plenty of room each month, so you can safely afford the full amount a bank would offer."
         )
-        recommendation = f"Use the Lender Sanction Limit (₹{lender:,.0f}): Your income and buffers comfortably support this capacity."
+        recommendation = f"Use the lender offer (₹{lender:,.0f}): Your income and savings comfortably support this loan."
 
     return {
         "why": why,
@@ -144,32 +130,32 @@ def explain_rate_band(profile: Dict[str, Any], calculated: Dict[str, Any]) -> st
 
     if is_lap:
         return (
-            f"Why: Pledging an unencumbered shop/property shifts your product to Loan Against Property (LAP), "
-            f"reducing the interest band from standard 18%+ unsecured business rates down to {rate_min}%–{rate_max}%."
+            f"Why: Using your unencumbered property unlocks Loan Against Property (LAP) rates of {rate_min}%–{rate_max}%, "
+            f"which are much lower than standard unsecured business rates."
         )
     if "informal" in category.lower() or "gig" in category.lower():
         if profile.get("is_ev_vehicle") or "ev" in str(profile.get("loan_purpose", "")).lower():
             return (
-                f"Why: Platform transaction logs and commercial EV hypothecation unlock priority-sector rates of "
-                f"{rate_min}%–{rate_max}%, replacing predatory digital app debt charging over 30% APR."
+                f"Why: Financing an electric vehicle unlocks a lower commercial EV rate of {rate_min}%–{rate_max}%, "
+                f"much cheaper than instant app loans."
             )
         return (
-            f"Why: Priority micro-credit benchmarks set your fair rate band at {rate_min}%–{rate_max}%, "
-            f"far below predatory payday lending apps."
+            f"Why: Priority sector small-loan rates set your fair rate range at {rate_min}%–{rate_max}%, "
+            f"far below high-interest digital loan apps."
         )
     if "750" in cibil_str or (isinstance(cibil, (int, float)) and cibil >= 750):
         return (
-            f"Why: Your 750+ CIBIL and Tier-1 employer qualify you for the prime corporate band ({rate_min}%–{rate_max}%), "
-            f"while a {pf_pct}% processing fee plus statutory 18% GST sets your true all-in APR at {apr}%."
+            f"Why: A credit score of 750+ and stable employment qualify you for a prime rate of {rate_min}%–{rate_max}%. "
+            f"The estimated yearly cost adds a {pf_pct}% processing fee plus statutory 18% GST (APR {apr}%)."
         )
     if calculated.get("is_cibil_unknown"):
         return (
-            f"Why: A wider rate band of {rate_min}%–{rate_max}% is applied because your credit history is unverified, "
-            f"ensuring transparency without penalizing you as a defaulter (Rule 3: Unknown is never zero)."
+            f"Why: A wider range of {rate_min}%–{rate_max}% is shown because your credit score is unverified, "
+            f"without treating you as high risk."
         )
     return (
-        f"Why: Standard credit risk adjustments for debt utilization and tenure set your fair rate band at "
-        f"{rate_min}%–{rate_max}% with an all-in APR of {apr}%."
+        f"Why: This range reflects your credit score and income type. The estimated yearly cost of {apr}% "
+        f"includes standard fees and tax on top of the interest rate."
     )
 
 
@@ -186,27 +172,26 @@ def explain_monthly_ceiling(profile: Dict[str, Any], calculated: Dict[str, Any])
 
     if calculated.get("verdict") == "DON'T BORROW":
         return (
-            f"Why: Household essential costs and existing debt leave only ₹{safe_cap:,.0f} surplus; "
-            f"clearing active app debt and arrears must precede taking on new loan commitments."
+            f"Why: Your necessary living costs and current loan payments leave only ₹{safe_cap:,.0f} a month; "
+            f"clearing high-cost app debt comes first before taking a new loan."
         )
     if stress_results.get("was_adjusted"):
         return (
-            f"Why: Under a 20% income downturn, an EMI above ₹{safe_cap:,.0f} would consume over 65% of your remaining "
-            f"cash flow, so the monthly ceiling was adjusted downward to protect you from insolvency."
+            f"Why: If your income dropped by 20% or interest rates rose, a monthly payment above ₹{safe_cap:,.0f} "
+            f"would stretch your budget too thin, so your safe ceiling was set here."
         )
     if profile.get("seasonal_variance_high") or "self" in category.lower():
         return (
-            f"Why: Because retail enterprises experience seasonal revenue fluctuations, your safe ceiling of "
-            f"₹{safe_cap:,.0f}/mo is anchored strictly to your lowest earning trough months."
+            f"Why: Because small business earnings fluctuate through the year, your safe monthly payment of "
+            f"₹{safe_cap:,.0f} is anchored to your lower earning months."
         )
     if safe_cap < lender_emi:
         return (
-            f"Why: While bank FOIR rules allow up to ₹{lender_emi:,.0f}/month, your monthly rent of ₹{rent:,.0f} "
-            f"and living expenses cap your safe payment at ₹{safe_cap:,.0f} to protect your living buffer."
+            f"Why: While a bank might allow monthly payments up to ₹{lender_emi:,.0f}, your rent of ₹{rent:,.0f} "
+            f"and essential expenses mean keeping your payment at or below ₹{safe_cap:,.0f} protects your emergency cushion."
         )
     return (
-        f"Why: Capped at ₹{safe_cap:,.0f}/month because regulatory guidelines prevent total monthly debt repayments "
-        f"from exceeding your allowable income headroom."
+        f"Why: Keeping your payment at or below ₹{safe_cap:,.0f} a month leaves plenty of breathing room for daily expenses and savings."
     )
 
 
