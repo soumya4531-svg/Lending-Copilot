@@ -443,6 +443,9 @@ if "show_info_keys" not in st.session_state:
 if "form_version" not in st.session_state:
     st.session_state.form_version = 0
 
+if "scroll_to_top" not in st.session_state:
+    st.session_state.scroll_to_top = False
+
 def prep_math_profile(raw_profile: dict) -> dict:
     """Prepares and normalizes raw profile inputs for underwriting mathematical calculations."""
     math_profile = {k: v for k, v in raw_profile.items() if v is not None and v != "" and v != "Please select..."}
@@ -499,6 +502,7 @@ def apply_persona(persona_key: str):
         st.session_state.calculated_data = None
         st.session_state["current_active_category"] = None
         st.session_state.show_info_keys = {}
+        st.session_state.scroll_to_top = True
 
 def sync_active_profile_from_widgets():
     """Captures all currently entered values directly from Streamlit widget state."""
@@ -560,6 +564,33 @@ with col_header_right:
 # -----------------------------------------------------------------------------
 # TOP ACTION & STATUS BAR
 # -----------------------------------------------------------------------------
+if st.session_state.get("scroll_to_top", False):
+    st.session_state.scroll_to_top = False
+    components.html(
+        """
+        <script>
+        try {
+            window.parent.scrollTo({ top: 0, behavior: 'smooth' });
+            const mainContainers = [
+                window.parent.document.querySelector('section[data-testid="stMain"]'),
+                window.parent.document.querySelector('.stMain'),
+                window.parent.document.querySelector('section.main'),
+                window.parent.document.querySelector('div[data-testid="stAppViewContainer"]'),
+                window.parent.document.documentElement,
+                window.parent.document.body
+            ];
+            for (let el of mainContainers) {
+                if (el && el.scrollTo) el.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } catch (e) {
+            console.log('Scroll to top error:', e);
+        }
+        </script>
+        """,
+        height=0,
+        width=0
+    )
+
 top_status_col, top_btn_col = st.columns([3, 1])
 
 with top_status_col:
@@ -1225,6 +1256,15 @@ with col_outputs:
 
         # Copy script button (copies script to clipboard)
         st.code(card["spoken_script"], language="text")
+
+        # Close negotiation-terminal div
+        st.markdown("</div>", unsafe_allow_html=True)
+
+        # Bottom "Start Fresh" Action at the end of Results section
+        st.markdown("<hr style='border:0; border-top:1px solid #E2D9DE; margin:1.8rem 0 1.2rem;'>", unsafe_allow_html=True)
+        if st.button("🔄 Start Fresh", key="btn_start_fresh_bottom_results", use_container_width=True, help="Clear all inputs and reset to an unfilled neutral form"):
+            apply_persona("clean")
+            st.rerun()
 
 # -----------------------------------------------------------------------------
 # BENCHMARK PERSONA TESTING SECTION (BOTTOM BEFORE FOOTER)
